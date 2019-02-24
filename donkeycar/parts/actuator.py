@@ -140,15 +140,25 @@ class Adafruit_DCMotor_Hat:
 
 class SunFounder_ESC:
     def __init__(self,
-                 max_pulse=300,
-                 min_pulse=490,
-                 zero_pulse=350):
+                 max_pulse=1200,
+                 min_pulse=600,
+                 zero_pulse=0):
         self.max_pulse = max_pulse
         self.min_pulse = min_pulse
-        self.zero_pulse = zero_pulse
+        self.throttle = 0
 
-    def getPWM(self, throttle):
-        return throttle
+    def getPWM(self, speed):
+        """
+        Calculate the PWM value from speed, where 1 is full forward and
+        -1 is full backwards, 0 is stop.
+        """
+        if speed >= 0:
+            direction = SunFounder_Motor_Hat.FORWARD
+            self.throttle = int(dk.util.data.map_range(abs(speed), 0, 1, self.min_pulse, self.max_pulse))
+        else:
+            direction = SunFounder_Motor_Hat.BACKWARD
+            self.throttle = int(dk.util.data.map_range(abs(speed), -1, 0, self.min_pulse, self.max_pulse))
+        return (direction, self.throttle)
 
 class SunFounder_Motor_Hat:
     """
