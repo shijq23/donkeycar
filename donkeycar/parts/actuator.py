@@ -137,3 +137,78 @@ class Adafruit_DCMotor_Hat:
 
     def shutdown(self):
         self.mh.getMotor(self.motor_num).run(Adafruit_MotorHAT.RELEASE)
+
+class SunFounder_ESC:
+    def __init__(self,
+                 max_pulse=300,
+                 min_pulse=490,
+                 zero_pulse=350):
+        self.max_pulse = max_pulse
+        self.min_pulse = min_pulse
+        self.zero_pulse = zero_pulse
+
+    def getPWM(self, throttle):
+        return throttle
+
+class SunFounder_Motor_Hat:
+    """
+    SunFounder DC Motor Controller
+    Used for each motor on a differential drive car.
+    """
+    Motor_A = 17
+    Motor_B = 27
+    PWM_A = 4
+    PWM_B = 5
+    FORWARD = False
+    BACKWARD = True
+
+    def __init__(self):
+        import RPi.GPIO as GPIO
+        import atexit
+    
+        mode = GPIO.getmode()
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(SunFounder_Motor_Hat.Motor_A, GPIO.OUT)
+        GPIO.setup(SunFounder_Motor_Hat.Motor_B, GPIO.OUT)
+        GPIO.setmode(mode)
+
+        self.motor_a = PCA9685(SunFounder_Motor_Hat.PWM_A)
+        self.motor_b = PCA9685(SunFounder_Motor_Hat.PWM_B)
+        #GPIO.output(SunFounder_Motor_Hat.Motor_A, SunFounder_Motor_Hat.FORWARD)
+        #GPIO.output(SunFounder_Motor_Hat.Motor_B, SunFounder_Motor_Hat.FORWARD)
+        self.motor_a.set_pulse(0)
+        self.motor_b.set_pulse(0)
+
+        atexit.register(self.shutdown)
+        self.speed = 0
+        self.throttle = 0
+
+    def set_pulse(self, pulse):
+        self.motor_a.set_pulse(pulse)
+        self.motor_b.set_pulse(pulse)
+
+    def run(self, speed):
+        """
+        Update the speed of the motor where 1 is full forward and
+        -1 is full backwards.
+        """
+        import RPi.GPIO as GPIO
+        if speed > 1 or speed < -1:
+            raise ValueError("Speed must be between 1(forward) and -1(reverse)")
+
+        self.speed = speed
+        self.throttle = int(dk.util.data.map_range(abs(speed), 0, 1, 500, 1200))
+
+        if speed >= 0:
+            GPIO.output(SunFounder_Motor_Hat.Motor_A, SunFounder_Motor_Hat.FORWARD)
+            GPIO.output(SunFounder_Motor_Hat.Motor_B, SunFounder_Motor_Hat.FORWARD)
+        else:
+            GPIO.output(SunFounder_Motor_Hat.Motor_A, SunFounder_Motor_Hat.BACKWARD)
+            GPIO.output(SunFounder_Motor_Hat.Motor_B, SunFounder_Motor_Hat.BACKWARD)
+
+        self.motor_a.run(self.throttle)
+        self.motor_b.run(self.throttle)
+
+    def shutdown(self):
+        self.motor_a.run(0)
+        self.motor_b.run(0)
