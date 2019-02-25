@@ -4,7 +4,12 @@ import time
 import numpy as np
 from PIL import Image
 import glob
-class PiCamera():
+
+class BaseCamera:
+
+    def run_threaded(self):
+        return self.frame
+class PiCamera(BaseCamera):
     def __init__(self, resolution=(120, 160), framerate=7):
         self.video = cv2.VideoCapture(0)
         self.video.set(3,resolution[0]) #SCREEN_WIDTH
@@ -31,16 +36,14 @@ class PiCamera():
         time.sleep(2)
 
     def run(self):
-         _, bgr_image = self.video.read()
+        _, bgr_image = self.video.read()
         return bgr_image
 
     def update(self):
         # keep looping infinitely until the thread is stopped
-        while True:
+        while self.on:
             _, self.frame = self.video.read()
             # if the thread indicator variable is set, stop the thread
-            if not self.on:
-                break
 
     def shutdown(self):
         # indicate that the thread should be stopped

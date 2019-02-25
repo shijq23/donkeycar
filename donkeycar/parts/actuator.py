@@ -140,25 +140,39 @@ class Adafruit_DCMotor_Hat:
 
 class SunFounder_ESC:
     def __init__(self,
-                 max_pulse=1200,
-                 min_pulse=600,
-                 zero_pulse=0):
+                 max_pulse=1000,
+                 min_pulse=0,
+                 zero_pulse=500):
         self.max_pulse = max_pulse
         self.min_pulse = min_pulse
+        self.zero_pulse = zero_pulse
         self.throttle = 0
 
-    def getPWM(self, speed):
+    def getPWM_speed(self, speed):
         """
         Calculate the PWM value from speed, where 1 is full forward and
         -1 is full backwards, 0 is stop.
         """
         if speed >= 0:
             direction = SunFounder_Motor_Hat.FORWARD
-            self.throttle = int(dk.util.data.map_range(abs(speed), 0, 1, self.min_pulse, self.max_pulse))
+            self.throttle = int(dk.util.data.map_range(abs(speed), 0, 1, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
         else:
             direction = SunFounder_Motor_Hat.BACKWARD
-            self.throttle = int(dk.util.data.map_range(abs(speed), -1, 0, self.min_pulse, self.max_pulse))
+            self.throttle = int(dk.util.data.map_range(abs(speed), -1, 0, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
         return (direction, self.throttle)
+
+    def getPWM_pulse(self, pulse):
+        """
+        Calculate the PWM value from pulse
+        """
+        if pulse >= self.zero_pulse:
+            direction = SunFounder_Motor_Hat.FORWARD
+            self.throttle = int(dk.util.data.map_range(pulse, self.zero_pulse, self.max_pulse, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
+        else:
+            direction = SunFounder_Motor_Hat.BACKWARD
+            self.throttle = int(dk.util.data.map_range(pulse, self.min_pulse, self.zero_pulse, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
+        return (direction, self.throttle)
+
 
 class SunFounder_Motor_Hat:
     """
@@ -171,8 +185,13 @@ class SunFounder_Motor_Hat:
     PWM_B = 5
     FORWARD = False
     BACKWARD = True
+    PWM_MAX_SPEED = 1200
+    PWM_MIN_SPEED = 500
 
-    def __init__(self):
+    def __init__(self,
+                 max_pulse=1000,
+                 min_pulse=0,
+                 zero_pulse=500):
         import RPi.GPIO as GPIO
         import atexit
     
@@ -180,12 +199,15 @@ class SunFounder_Motor_Hat:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(SunFounder_Motor_Hat.Motor_A, GPIO.OUT)
         GPIO.setup(SunFounder_Motor_Hat.Motor_B, GPIO.OUT)
-        GPIO.setmode(mode)
+        if mode != None:
+            GPIO.setmode(mode)
 
+        self.esc = SunFounder_ESC(max_pulse, min_pulse, zero_pulse)
         self.motor_a = PCA9685(SunFounder_Motor_Hat.PWM_A)
         self.motor_b = PCA9685(SunFounder_Motor_Hat.PWM_B)
-        #GPIO.output(SunFounder_Motor_Hat.Motor_A, SunFounder_Motor_Hat.FORWARD)
-        #GPIO.output(SunFounder_Motor_Hat.Motor_B, SunFounder_Motor_Hat.FORWARD)
+        GPIO.output(SunFounder_Motor_Hat.Motor_A, SunFounder_Motor_Hat.FORWARD)
+        GPIO.output(SunFounder_Motor_Hat.Motor_B, SunFounder_Motor_Hat.FORWARD)
+        self.dir = SunFounder_Motor_Hat.FORWARD
         self.motor_a.set_pulse(0)
         self.motor_b.set_pulse(0)
 
@@ -194,8 +216,13 @@ class SunFounder_Motor_Hat:
         self.throttle = 0
 
     def set_pulse(self, pulse):
-        self.motor_a.set_pulse(pulse)
-        self.motor_b.set_pulse(pulse)
+        dir, pwm = self.esc.getPWM_pulse(pulse)
+        if dir != self.dir:
+            GPIO.output(SunFounder_Motor_Hat.Motor_A, dir)
+            GPIO.output(SunFounder_Motor_Hat.Motor_B, dir)
+            self.dir = dir
+        self.motor_a.set_pulse(pwm)
+        self.motor_b.set_pulse(pwm)
 
     def run(self, speed):
         """
@@ -207,7 +234,7 @@ class SunFounder_Motor_Hat:
             raise ValueError("Speed must be between 1(forward) and -1(reverse)")
 
         self.speed = speed
-        self.throttle = int(dk.util.data.map_range(abs(speed), 0, 1, 500, 1200))
+        self.throttle = int(dk.util.data.map_range(abs(speed), 0, 1, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
 
         if speed >= 0:
             GPIO.output(SunFounder_Motor_Hat.Motor_A, SunFounder_Motor_Hat.FORWARD)
