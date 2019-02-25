@@ -217,34 +217,29 @@ class SunFounder_Motor_Hat:
 
     def set_pulse(self, pulse):
         dir, pwm = self.esc.getPWM_pulse(pulse)
+        self.apply(dir, pwm)
+
+    def apply(self, dir, pwm):
+        import RPi.GPIO as GPIO
         if dir != self.dir:
             GPIO.output(SunFounder_Motor_Hat.Motor_A, dir)
             GPIO.output(SunFounder_Motor_Hat.Motor_B, dir)
             self.dir = dir
         self.motor_a.set_pulse(pwm)
         self.motor_b.set_pulse(pwm)
+        self.throttle = pwm
 
     def run(self, speed):
         """
         Update the speed of the motor where 1 is full forward and
         -1 is full backwards.
         """
-        import RPi.GPIO as GPIO
         if speed > 1 or speed < -1:
             raise ValueError("Speed must be between 1(forward) and -1(reverse)")
 
         self.speed = speed
-        self.throttle = int(dk.util.data.map_range(abs(speed), 0, 1, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
-
-        if speed >= 0:
-            GPIO.output(SunFounder_Motor_Hat.Motor_A, SunFounder_Motor_Hat.FORWARD)
-            GPIO.output(SunFounder_Motor_Hat.Motor_B, SunFounder_Motor_Hat.FORWARD)
-        else:
-            GPIO.output(SunFounder_Motor_Hat.Motor_A, SunFounder_Motor_Hat.BACKWARD)
-            GPIO.output(SunFounder_Motor_Hat.Motor_B, SunFounder_Motor_Hat.BACKWARD)
-
-        self.motor_a.run(self.throttle)
-        self.motor_b.run(self.throttle)
+        dir, pwm = self.esc.getPWM_speed(speed)
+        self.apply(dir, pwm)
 
     def shutdown(self):
         self.motor_a.run(0)
