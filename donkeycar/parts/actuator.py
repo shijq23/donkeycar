@@ -153,7 +153,10 @@ class SunFounder_ESC:
         Calculate the PWM value from speed, where 1 is full forward and
         -1 is full backwards, 0 is stop.
         """
-        if speed >= 0:
+        if speed == 0:
+            direction = SunFounder_Motor_Hat.FORWARD
+            self.throttle = 0
+        elif speed > 0:
             direction = SunFounder_Motor_Hat.FORWARD
             self.throttle = int(dk.util.data.map_range(speed, 0, 1, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
         else:
@@ -165,7 +168,10 @@ class SunFounder_ESC:
         """
         Calculate the PWM value from pulse
         """
-        if pulse >= self.zero_pulse:
+        if pulse == self.zero_pulse:
+            direction = SunFounder_Motor_Hat.FORWARD
+            self.throttle = 0
+        elif pulse > self.zero_pulse:
             direction = SunFounder_Motor_Hat.FORWARD
             self.throttle = int(dk.util.data.map_range(pulse, self.zero_pulse, self.max_pulse, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
         else:
