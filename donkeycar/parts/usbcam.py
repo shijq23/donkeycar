@@ -12,8 +12,9 @@ class BaseCamera:
 class PiCamera(BaseCamera):
     def __init__(self, resolution=(120, 160), framerate=7):
         self.video = cv2.VideoCapture(0)
-        self.video.set(3,resolution[0]) #SCREEN_WIDTH
-        self.video.set(4,resolution[1]) #SCREEN_HIGHT
+        self.video.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0]) #SCREEN_WIDTH
+        self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1]) #SCREEN_HIGHT
+        print('video resolution h {%0}, w {%1}'.format(resolution))
         # Find OpenCV version
         (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
         
@@ -42,8 +43,9 @@ class PiCamera(BaseCamera):
     def update(self):
         # keep looping infinitely until the thread is stopped
         while self.on:
-            _, self.frame = self.video.read()
+            _, bgr_image = self.video.read()
             # if the thread indicator variable is set, stop the thread
+            self.frame = bgr_image
 
     def shutdown(self):
         # indicate that the thread should be stopped
