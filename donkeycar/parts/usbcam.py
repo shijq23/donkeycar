@@ -4,8 +4,7 @@ import time
 import numpy as np
 from PIL import Image
 import glob
-
-class UsbCamera():
+class PiCamera():
     def __init__(self, resolution=(120, 160), framerate=7):
         self.video = cv2.VideoCapture(0)
         self.video.set(3,resolution[0]) #SCREEN_WIDTH
