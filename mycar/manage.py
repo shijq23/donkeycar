@@ -29,7 +29,6 @@ from donkeycar.parts.transform import Lambda
 
 
 def drive(cfg, model_path=None, use_chaos=False):
-
     """
     Construct a working robotic vehicle from many parts.
     Each part runs as a job in the Vehicle loop, calling either
@@ -99,7 +98,7 @@ def drive(cfg, model_path=None, use_chaos=False):
     steering_controller = PCA9685(cfg.STEERING_CHANNEL)
     steering = PWMSteering(controller=steering_controller,
                            left_pulse=cfg.STEERING_LEFT_PWM,
-                           right_pulse=cfg.STEERING_RIGHT_PWM) 
+                           right_pulse=cfg.STEERING_RIGHT_PWM)
 
     throttle_controller = SunFounder_Motor_Hat(max_pulse=cfg.THROTTLE_MAX_PWM,
                            zero_pulse=cfg.THROTTLE_ZERO_PWM,
@@ -179,8 +178,3 @@ if __name__ == '__main__':
         base_model_path = args['--base_model']
         cache = not args['--no_cache']
         train(cfg, tub, new_model_path, base_model_path)
-
-
-
-
-
