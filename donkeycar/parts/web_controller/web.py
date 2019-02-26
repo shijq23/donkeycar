@@ -61,7 +61,8 @@ class LocalWebController(tornado.web.Application):
             (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": self.static_file_path}),
         ]
 
-        settings = {'debug': True}
+        settings = {'debug': True,
+                    "static_path": self.static_file_path}
         super().__init__(handlers, **settings)
 
     def run_chaos(self, img_arr=None):
