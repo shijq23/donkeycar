@@ -1,0 +1,12 @@
+[Unit]
+Description=PiCar Autopilot
+After=multi-user.target
+
+[Service]
+Type=idle
+User=pi
+Group=pi
+ExecStart=/home/pi/mycar/start.sh
+
+[Install]
+WantedBy=multi-user.target
