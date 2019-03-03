@@ -2,6 +2,12 @@ import cwiid
 import time
 import Adafruit_PCA9685
 
+#https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/resources/wiimote.py
+#https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/wiimote/
+#https://github.com/azzra/python3-wiimote
+#https://github.com/abstrakraft/cwiid
+#https://github.com/the-raspberry-pi-guy/skateboard
+
 #connecting to the wiimote. This allows several attempts
 # as first few often fail.
 pwm = Adafruit_PCA9685.PCA9685()

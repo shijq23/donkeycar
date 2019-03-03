@@ -2,6 +2,11 @@
 # Based on information from:
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
+#https://wiibrew.org/wiki/Wiimote
+#https://github.com/ricorx7/donkey/blob/master/donkeycar/parts/controllers/joystick.py
+#https://gist.github.com/rdb/8864666
+#https://discourse.panda3d.org/t/game-controllers-on-linux-without-pygame/14128
+
 import os, struct, array, time
 from fcntl import ioctl
 
@@ -100,9 +105,9 @@ class WiiMote():
 
         # Get the device name.
         #buf = bytearray(63)
-        buf = array.array('b', [0] * 64)
+        buf = array.array('B', [0] * 64)
         ioctl(self.jsdev, 0x80006a13 + (0x10000 * len(buf)), buf) # JSIOCGNAME(len)
-        js_name = buf.tostring()
+        js_name = buf.tobytes().decode('utf-8')
         print('Device name: %s' % js_name)
 
         # Get number of axes and buttons.
