@@ -231,9 +231,10 @@ class SunFounder_Motor_Hat:
             GPIO.output(SunFounder_Motor_Hat.Motor_A, dir)
             GPIO.output(SunFounder_Motor_Hat.Motor_B, dir)
             self.dir = dir
-        self.motor_a.set_pulse(pwm)
-        self.motor_b.set_pulse(pwm)
-        self.throttle = pwm
+        if pwm != self.throttle:
+            self.motor_a.set_pulse(pwm)
+            self.motor_b.set_pulse(pwm)
+            self.throttle = pwm
 
     def run(self, speed):
         """

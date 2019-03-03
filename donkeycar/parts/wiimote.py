@@ -145,7 +145,7 @@ class WiiMote():
         self.read_event()
         return self.angle, self.throttle, self.drive_mode, self.recording
 
-    def run_threaded(self, img_arr=None):
+    def run_threaded(self):
         return self.angle, self.throttle, self.drive_mode, self.recording
 
     def shutdown(self):
