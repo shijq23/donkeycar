@@ -51,6 +51,6 @@ class PiCamera(BaseCamera):
     def shutdown(self):
         # indicate that the thread should be stopped
         self.on = False
-        print('stoping UsbCamera')
+        print('stopping UsbCamera')
         time.sleep(.5)
         self.video.release()

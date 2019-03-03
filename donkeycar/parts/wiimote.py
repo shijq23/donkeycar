@@ -2,6 +2,8 @@
 # Based on information from:
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
+#https://pimylifeup.com/raspberry-pi-wiimote-controllers/
+#https://www.instructables.com/id/Wiimote-Controller-Configuration-for-Raspberry-Pi-/
 #https://wiibrew.org/wiki/Wiimote
 #https://github.com/ricorx7/donkey/blob/master/donkeycar/parts/controllers/joystick.py
 #https://gist.github.com/rdb/8864666
@@ -155,6 +157,7 @@ class WiiMote():
 
     def shutdown(self):
         self.running = False
+        print("stopping wiimote")
         #self.jsdev.close()
         os.close(self.jsdev.fileno())
 
