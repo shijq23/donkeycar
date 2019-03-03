@@ -138,7 +138,7 @@ class WiiMote():
         self.running = True
         self.angle = 0.0
         self.throttle = 0.0
-        self.drive_mode = True
+        self.drive_mode = 'user'
         self.recording = False
 
     def run(self):
@@ -150,19 +150,23 @@ class WiiMote():
 
     def shutdown(self):
         self.running = False
-        self.jsdev.close()
-        time.sleep(0.1)
+        #self.jsdev.close()
+        os.close(self.jsdev.fileno())
 
     def read_event(self):
         evbuf = self.jsdev.read(8)
         if evbuf:
             jstime, jsvalue, jstype, jsnumber = struct.unpack('IhBB', evbuf)
 
-            if type & 0x80:
+            if jstype & 0x80:
                 print ("(initial)")
 
-            if type & 0x01:
+            if jstype & 0x01:
                 button = self.button_map[jsnumber]
+                if button == "x" or button =="y":
+                    #emergency stop
+                    self.throttle = 0.0
+                    self.angle = 0.0
                 if button:
                     self.button_states[button] = jsvalue
                     if jsvalue:
@@ -170,16 +174,18 @@ class WiiMote():
                     else:
                         print( "%s released" % (button))
 
-            if type & 0x02:
+            if jstype & 0x02:
                 axis = self.axis_map[jsnumber]
                 if axis:
                     fvalue = jsvalue / 32767.0
                     self.axis_states[axis] = fvalue
                     print( "%s: %.3f" % (axis, fvalue))
                 if axis == "x":
-                    self.angle = self.angle + jsvalue
+                    self.angle = fvalue
                 elif axis == "y":
-                    self.throttle = self.throttle + jsvalue
+                    self.throttle = fvalue
+
+            print("s %f, %f, %s, %d" % (self.angle, self.throttle, self.drive_mode, self.recording))
 
     def update(self):
         # keep looping infinitely until the thread is stopped
