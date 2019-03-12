@@ -5,11 +5,7 @@ import numpy as np
 from PIL import Image
 import glob
 
-class BaseCamera:
-
-    def run_threaded(self):
-        return self.frame
-class PiCamera(BaseCamera):
+class PiCamera():
     def __init__(self, resolution=(120, 160), framerate=7):
         self.video = cv2.VideoCapture(0)
         self.video.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0]) #SCREEN_WIDTH
@@ -39,6 +35,9 @@ class PiCamera(BaseCamera):
     def run(self):
         _, bgr_image = self.video.read()
         return bgr_image
+
+    def run_threaded(self):
+        return self.frame
 
     def update(self):
         # keep looping infinitely until the thread is stopped
