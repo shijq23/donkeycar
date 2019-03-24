@@ -52,19 +52,32 @@ def drive(cfg, model_path=None, use_chaos=False):
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
 
-    # See if we should even run the pilot module.
+    # See if we should even run the local pilot module.
     # This is only needed because the part run_condition only accepts boolean
-    def pilot_condition(mode):
-        if mode == 'user':
-            return False
-        else:
+    def local_pilot_condition(mode):
+        if mode == 'local' or mode == 'local_angle':
             return True
+        else:
+            return False
 
-    pilot_condition_part = Lambda(pilot_condition)
-    V.add(pilot_condition_part,
+    # See if we should even run the remote pilot module.
+    # This is only needed because the part run_condition only accepts boolean
+    def remote_pilot_condition(mode):
+        if mode == 'remote' or mode == 'remote_angle':
+            return True
+        else:
+            return False
+
+    local_pilot_condition_part = Lambda(local_pilot_condition)
+    V.add(local_pilot_condition_part,
           inputs=['user/mode'],
-          outputs=['run_pilot'])
+          outputs=['run_local_pilot'])
 
+    remote_pilot_condition_part = Lambda(remote_pilot_condition)
+    V.add(remote_pilot_condition_part,
+          inputs=['user/mode'],
+          outputs=['run_remote_pilot'])
+    
     # Run the pilot if the mode is not user.
     kl = KerasLinear()
     if model_path:
@@ -73,7 +86,9 @@ def drive(cfg, model_path=None, use_chaos=False):
     V.add(kl,
           inputs=['cam/image_array'],
           outputs=['pilot/angle', 'pilot/throttle'],
-          run_condition='run_pilot')
+          run_condition='run_local_pilot')
+
+
 
     # Choose what inputs should change the car.
     def drive_mode(mode,
@@ -82,7 +97,7 @@ def drive(cfg, model_path=None, use_chaos=False):
         if mode == 'user':
             return user_angle, user_throttle
 
-        elif mode == 'local_angle':
+        elif mode == 'local_angle' or mode == 'remote_angle':
             return pilot_angle, user_throttle
 
         else:

@@ -55,7 +55,7 @@ class KerasPilot:
             verbose=1,
             validation_data=val_gen,
             callbacks=callbacks_list,
-            validation_steps=steps * (1.0 - train_split) / train_split)
+            validation_steps=int(steps * (1.0 - train_split) / train_split))
         return hist
 
 
@@ -108,3 +108,17 @@ def default_linear():
                   loss_weights={'angle_out': 0.5, 'throttle_out': .5})
 
     return model
+
+
+class KerasClient():
+    def __init__(self, host=None, port=8888, *args, **kwargs):
+        self.host = host
+        self.port = port
+
+    def run(self, img_arr):
+        img_arr = img_arr.reshape((1,) + img_arr.shape)
+        outputs = self.model.predict(img_arr)
+        # print(len(outputs), outputs)
+        steering = outputs[0]
+        throttle = outputs[1]
+        return steering[0][0], throttle[0][0]
