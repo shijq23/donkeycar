@@ -64,6 +64,13 @@
     python3 scripts/setup.py
 ```
 
+If see error: moviepy 1.0.0 has requirement imageio<2.5,>=2.0, but you'll have imageio 2.5.0 which is incompatible.
+
+```bash
+pip install --upgrade setuptools
+pip3 install 'moviepy<1.0.0'
+```
+
 ## train an auto pilot
 
 ### create a car app

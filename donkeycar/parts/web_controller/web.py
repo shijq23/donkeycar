@@ -102,6 +102,8 @@ class LocalWebController(tornado.web.Application):
     def run(self, img_arr=None):
         return self.run_threaded(img_arr)
 
+    def shutdown(self):
+        pass
 
 class DriveAPI(tornado.web.RequestHandler):
     def get(self):
