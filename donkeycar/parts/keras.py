@@ -127,14 +127,14 @@ class KerasClient():
         self.cv = threading.Condition()
         self.new_data = False
 
-    def on_connect(self, sid, data):
+    def on_connect(self):
         print("connected")
 
-    def on_disconnect(self, sid, data):
+    def on_disconnect(self):
         print("disconneted")
 
-    def on_steer(self, sid, data):
-        print("steer " + data)
+    def on_steer(self, data):
+        print("steer " + str(data))
         self.steering_angle = float(data['steering_angle'])
         self.throttle = float(data['throttle'])
         self.cv.acquire()
@@ -147,11 +147,17 @@ class KerasClient():
         self.sio.connect(url)
         self.connected = True
 
-    def run(self, img_arr, angle, throttle, timestamp):
+    def run(self, img_arr, angle=0.0, throttle=0.0, timestamp=0):
         import base64
         if not self.connected:
             self.connect()
         
+        if angle == None:
+            angle = 0.0
+        if throttle == None:
+            throttle = 0.0
+        if timestamp == None:
+            timestamp = 0
         #img_arr = img_arr.reshape((1,) + img_arr.shape)
         img_str = base64.b64encode(img_arr)
         dat = {
