@@ -30,7 +30,7 @@ class PiCamera():
         self.on = True
 
         print('UsbCamera loaded.. .warming camera')
-        time.sleep(2)
+        #time.sleep(2)
 
     def run(self):
         _, bgr_image = self.video.read()
@@ -42,10 +42,11 @@ class PiCamera():
     def update(self):
         # keep looping infinitely until the thread is stopped
         while self.on:
-            _, bgr_image = self.video.read()
-            # if the thread indicator variable is set, stop the thread
-            if bgr_image is not None:
-                self.frame = bgr_image.copy()
+            if self.video.isOpened():
+                _, bgr_image = self.video.read()
+                # if the thread indicator variable is set, stop the thread
+                if bgr_image is not None:
+                    self.frame = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
 
     def shutdown(self):
         # indicate that the thread should be stopped
