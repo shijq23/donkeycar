@@ -119,34 +119,35 @@ class KerasClient():
         self.connected = False
         self.sio = socketio.Client()
 
-        self.sio.on('steer', handler=self.steer)
-        self.sio.on('connect', handler=self.connected)
-        self.sio.on('disconnect', handler=self.disconnected)
+        self.sio.on('steer', handler=self.on_steer)
+        self.sio.on('connect', handler=self.on_connect)
+        self.sio.on('disconnect', handler=self.on_disconnect)
         self.steering_angle = 0.0
         self.throttle = 0.0
         self.cv = threading.Condition()
         self.new_data = False
 
-    def connected(self, sid, data):
+    def on_connect(self, sid, data):
         print("connected")
 
-    def disconnected(self, sid, data):
+    def on_disconnect(self, sid, data):
         print("disconneted")
 
-    def steer(self, sid, data):
+    def on_steer(self, sid, data):
         print("steer " + data)
         self.steering_angle = float(data['steering_angle'])
         self.throttle = float(data['throttle'])
         self.cv.acquire()
-        new_data = True
+        self.new_data = True
         self.cv.notifyAll()
         self.cv.release()
         
     def connect(self):
         url = "http://" + self.host + ":" + self.port
         self.sio.connect(url)
+        self.connected = True
 
-    def run(self, img_arr):
+    def run(self, img_arr, angle, throttle, timestamp):
         import base64
         if not self.connected:
             self.connect()
@@ -155,20 +156,19 @@ class KerasClient():
         img_str = base64.b64encode(img_arr)
         dat = {
             #"msg_type": "telemetry",
-            "steering_angle": "", #[-1.0, 1.0]
-            "throttle": "", #[-1.0, 1.0]
+            "steering_angle": angle, #[-1.0, 1.0]
+            "throttle": throttle, #[-1.0, 1.0]
             "speed": 1.0, #[]
             "image": img_str,
             "pos_x": 0.0,
             "pos_y": 0.0,
             "pos_z": 0.0,
             "cte": 0.0,
-            "time": 0
+            "time": timestamp
         }
         self.sio.emit(
             "telemetry",
-            data=dat,
-            skip_sid=True)
+            data=dat)
         
         self.cv.acquire()
         self.new_data = False
