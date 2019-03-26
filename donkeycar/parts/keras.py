@@ -152,13 +152,13 @@ class KerasClient():
         if not self.connected:
             self.connect()
         
-        if angle == None:
+        if angle is None:
             angle = 0.0
-        if throttle == None:
+        if throttle is None:
             throttle = 0.0
-        if timestamp == None:
+        if timestamp is None:
             timestamp = 0
-        #img_arr = img_arr.reshape((1,) + img_arr.shape)
+        img_arr = img_arr.reshape((1,) + img_arr.shape)
         img_str = base64.b64encode(img_arr)
         dat = {
             #"msg_type": "telemetry",
@@ -178,7 +178,9 @@ class KerasClient():
         
         self.cv.acquire()
         self.new_data = False
-        while not self.new_data:
+        max_try = 0
+        while not self.new_data and max_try < 2:
             self.cv.wait(1.0)
+            max_try += 1
         self.cv.release()
         return self.steering_angle, self.throttle
