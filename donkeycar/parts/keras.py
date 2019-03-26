@@ -111,14 +111,68 @@ def default_linear():
 
 
 class KerasClient():
-    def __init__(self, host=None, port=8888, *args, **kwargs):
+    def __init__(self, host="127.0.0.1", port="9090", *args, **kwargs):
+        import socketio
+        import threading
         self.host = host
         self.port = port
+        self.connected = False
+        self.sio = socketio.Client()
+
+        self.sio.on('steer', handler=self.steer)
+        self.sio.on('connect', handler=self.connected)
+        self.sio.on('disconnect', handler=self.disconnected)
+        self.steering_angle = 0.0
+        self.throttle = 0.0
+        self.cv = threading.Condition()
+        self.new_data = False
+
+    def connected(self, sid, data):
+        print("connected")
+
+    def disconnected(self, sid, data):
+        print("disconneted")
+
+    def steer(self, sid, data):
+        print("steer " + data)
+        self.steering_angle = float(data['steering_angle'])
+        self.throttle = float(data['throttle'])
+        self.cv.acquire()
+        new_data = True
+        self.cv.notifyAll()
+        self.cv.release()
+        
+    def connect(self):
+        url = "http://" + self.host + ":" + self.port
+        self.sio.connect(url)
 
     def run(self, img_arr):
-        img_arr = img_arr.reshape((1,) + img_arr.shape)
-        outputs = self.model.predict(img_arr)
-        # print(len(outputs), outputs)
-        steering = outputs[0]
-        throttle = outputs[1]
-        return steering[0][0], throttle[0][0]
+        import base64
+        if not self.connected:
+            self.connect()
+        
+        #img_arr = img_arr.reshape((1,) + img_arr.shape)
+        img_str = base64.b64encode(img_arr)
+        dat = {
+            #"msg_type": "telemetry",
+            "steering_angle": "", #[-1.0, 1.0]
+            "throttle": "", #[-1.0, 1.0]
+            "speed": 1.0, #[]
+            "image": img_str,
+            "pos_x": 0.0,
+            "pos_y": 0.0,
+            "pos_z": 0.0,
+            "cte": 0.0,
+            "time": 0
+        }
+        self.sio.emit(
+            "telemetry",
+            data=dat,
+            skip_sid=True)
+        
+        self.cv.acquire()
+        self.new_data = False
+        while not self.new_data:
+            self.cv.wait(1.0)
+        self.cv.release()
+        return self.steering_angle, self.throttle

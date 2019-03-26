@@ -24,7 +24,7 @@ from donkeycar.parts.datastore import TubGroup, TubWriter
 from donkeycar.parts.web_controller import LocalWebController
 from donkeycar.parts.clock import Timestamp
 from donkeycar.parts.datastore import TubGroup, TubWriter
-from donkeycar.parts.keras import KerasLinear
+from donkeycar.parts.keras import KerasLinear, KerasClient
 
 
 def drive(cfg, model_path=None, use_chaos=False):
@@ -88,7 +88,11 @@ def drive(cfg, model_path=None, use_chaos=False):
           outputs=['pilot/angle', 'pilot/throttle'],
           run_condition='run_local_pilot')
 
-
+    rk = KerasClient(cfg.REMOTE_PILOT_HOST, cfg.REMOTE_PILOT_PORT)
+    V.add(rk,
+          inputs=['cam/image_array', 'pilot/angle', 'pilot/throttle', 'timestamp'],
+          outputs=['pilot/angle', 'pilot/throttle'],
+          run_condition='run_remote_pilot')
 
     # Choose what inputs should change the car.
     def drive_mode(mode,
