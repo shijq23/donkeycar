@@ -158,8 +158,9 @@ class KerasClient():
             throttle = 0.0
         if timestamp is None:
             timestamp = 0
-        img_arr = img_arr.reshape((1,) + img_arr.shape)
-        img_str = base64.b64encode(img_arr)
+        #img_arr = img_arr.reshape((1,) + img_arr.shape)
+        b64_bytes = base64.b64encode(img_arr)
+        img_str = b64_bytes.decode()
         dat = {
             #"msg_type": "telemetry",
             "steering_angle": angle, #[-1.0, 1.0]
