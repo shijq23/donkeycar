@@ -11,7 +11,8 @@ from tensorflow.python.keras.models import Model, load_model
 from tensorflow.python.keras.layers import Convolution2D
 from tensorflow.python.keras.layers import Dropout, Flatten, Dense
 from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
-
+from PIL import Image
+from io import BytesIO
 
 class KerasPilot:
 
@@ -159,8 +160,12 @@ class KerasClient():
         if timestamp is None:
             timestamp = 0
         #img_arr = img_arr.reshape((1,) + img_arr.shape)
-        b64_bytes = base64.b64encode(img_arr)
-        img_str = b64_bytes.decode()
+        #img = Image.fromarray(np.uint8(val))
+        img = Image.fromarray(img_arr)
+        stream = BytesIO()
+        img.save(stream, format="jpg")
+        #img.save(os.path.join(self.path, name))
+        img_str = base64.b64encode(stream.getvalue()).decode()
         dat = {
             #"msg_type": "telemetry",
             "steering_angle": angle, #[-1.0, 1.0]
