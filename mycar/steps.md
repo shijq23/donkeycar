@@ -24,6 +24,13 @@
     sudo apt-get install xsel xclip libxml2-dev libxslt-dev libzmq-dev libspatialindex-dev virtualenv
 ```
 
+### create a virtualenv
+
+```bash
+    python3 -m virtualenv .env
+    source .env/bin/activate
+```
+
 ### Pandas & Jupyter Requirements
 
 ```bash
@@ -61,14 +68,14 @@
     git clone -b dev https://github.com/shijq23/donkeycar.git
     cd donkeycar
     pip3 install -e .[tf]
-    python3 scripts/setup.py
+    #python3 scripts/setup.py
 ```
 
 If see error: moviepy 1.0.0 has requirement imageio<2.5,>=2.0, but you'll have imageio 2.5.0 which is incompatible.
 
 ```bash
-pip install --upgrade setuptools
-pip3 install 'moviepy<1.0.0'
+    pip3 install --upgrade setuptools
+    pip3 install 'moviepy<1.0.0'
 ```
 
 ## train an auto pilot
@@ -102,3 +109,11 @@ collect 10-20 laps of good dat
 ### drive with your model
 
 ```[pi]$ python3 manage.py drive --model ~/mycar/models/mypilot```
+
+### run donkey simulator client
+
+```[pc]$ donkey_sim.x86_64```
+
+### run donkey simulator server
+
+```[pc]$ donkey sim --config ~/mycar/config.py --model ~/mycar/models/sim```
