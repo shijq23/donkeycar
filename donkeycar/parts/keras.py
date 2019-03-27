@@ -163,20 +163,14 @@ class KerasClient():
         #img = Image.fromarray(np.uint8(val))
         img = Image.fromarray(img_arr)
         stream = BytesIO()
-        img.save(stream, format="jpg")
+        img.save(stream, format="jpeg")
         #img.save(os.path.join(self.path, name))
         img_str = base64.b64encode(stream.getvalue()).decode()
         dat = {
-            #"msg_type": "telemetry",
             "steering_angle": angle, #[-1.0, 1.0]
             "throttle": throttle, #[-1.0, 1.0]
             "speed": 1.0, #[]
-            "image": img_str,
-            "pos_x": 0.0,
-            "pos_y": 0.0,
-            "pos_z": 0.0,
-            "cte": 0.0,
-            "time": timestamp
+            "image": img_str
         }
         self.sio.emit(
             "telemetry",
