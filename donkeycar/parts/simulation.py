@@ -118,6 +118,7 @@ class SteeringServer(object):
         self.send_control(0, 0)
 
     def send_control(self, steering_angle, throttle):
+        # print("angle %f, throttle %f" % (steering_angle, throttle))
         self.sio.emit(
             "steer",
             data={
