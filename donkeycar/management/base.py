@@ -299,7 +299,7 @@ class Sim(BaseCommand):
         def connect(sid, environ):
             ss.connect(sid, environ)
 
-        ss.go(('0.0.0.0', 9090))
+        ss.go(('0.0.0.0', cfg.REMOTE_PILOT_PORT))
 
 
 

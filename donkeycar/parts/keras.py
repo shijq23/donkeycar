@@ -10,9 +10,14 @@ from tensorflow.python.keras.layers import Input
 from tensorflow.python.keras.models import Model, load_model
 from tensorflow.python.keras.layers import Convolution2D
 from tensorflow.python.keras.layers import Dropout, Flatten, Dense
-from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
+from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping, TensorBoard
 from PIL import Image
 from io import BytesIO
+import tensorflow as tf
+
+print("tensorflow version %s" % tf.VERSION)
+print("tensorflow.keras version %s" % tf.keras.__version__)
+
 
 class KerasPilot:
 
@@ -72,6 +77,7 @@ class KerasLinear(KerasPilot):
 
     def run(self, img_arr):
         img_arr = img_arr.reshape((1,) + img_arr.shape)
+        #outputs = self.model.predict(img_arr[None, :, :, :])
         outputs = self.model.predict(img_arr)
         # print(len(outputs), outputs)
         steering = outputs[0]
