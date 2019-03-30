@@ -150,7 +150,7 @@ class KerasClient():
         print("disconneted")
 
     def on_steer(self, data):
-        print("steer " + str(data))
+        # print("steer " + str(data))
         self.steering_angle = float(data['steering_angle'])
         self.throttle = float(data['throttle'])
         
