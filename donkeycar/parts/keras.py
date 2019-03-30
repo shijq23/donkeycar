@@ -175,8 +175,8 @@ class KerasClient():
         img.save(stream, format="jpeg")
         img_str = base64.b64encode(stream.getvalue()).decode()
         dat = {
-            "steering_angle": angle, #[-1.0, 1.0]
-            "throttle": throttle, #[-1.0, 1.0]
+            "steering_angle": angle.__str__(), #[-1.0, 1.0]
+            "throttle": throttle.__str__(), #[-1.0, 1.0]
             "speed": 1.0, #[]
             "image": img_str
         }
