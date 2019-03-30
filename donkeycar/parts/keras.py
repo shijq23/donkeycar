@@ -48,8 +48,20 @@ class KerasPilot:
                                    patience=patience,
                                    verbose=verbose,
                                    mode='auto')
+        # tensor board
+        board = TensorBoard(log_dir='./tb_logs',
+                            histogram_freq=1,
+                            batch_size=32,
+                            write_graph=True,
+                            write_grads=True,
+                            write_images=False,
+                            embeddings_freq=0,
+                            embeddings_layer_names=None,
+                            embeddings_metadata=None,
+                            embeddings_data=None,
+                            update_freq='epoch')
 
-        callbacks_list = [save_best]
+        callbacks_list = [save_best, board]
 
         if use_early_stop:
             callbacks_list.append(early_stop)
@@ -118,9 +130,8 @@ def default_linear():
 
 
 class KerasClient():
-    def __init__(self, host="127.0.0.1", port="9090", *args, **kwargs):
+    def __init__(self, host="127.0.0.1", port=9090, *args, **kwargs):
         import socketio
-        import threading
         self.host = host
         self.port = port
         self.connected = False
@@ -131,8 +142,6 @@ class KerasClient():
         self.sio.on('disconnect', handler=self.on_disconnect)
         self.steering_angle = 0.0
         self.throttle = 0.0
-        self.cv = threading.Condition()
-        self.new_data = False
 
     def on_connect(self):
         print("connected")
@@ -144,17 +153,14 @@ class KerasClient():
         print("steer " + str(data))
         self.steering_angle = float(data['steering_angle'])
         self.throttle = float(data['throttle'])
-        self.cv.acquire()
-        self.new_data = True
-        self.cv.notifyAll()
-        self.cv.release()
         
     def connect(self):
-        url = "http://" + self.host + ":" + self.port
+        url = "http://" + self.host + ":" + str(self.port)
+        print("connecting to %s" % url)
         self.sio.connect(url)
         self.connected = True
 
-    def run(self, img_arr, angle=0.0, throttle=0.0, timestamp=0):
+    def run(self, img_arr, angle=0.0, throttle=0.0):
         import base64
         if not self.connected:
             self.connect()
@@ -163,14 +169,10 @@ class KerasClient():
             angle = 0.0
         if throttle is None:
             throttle = 0.0
-        if timestamp is None:
-            timestamp = 0
-        #img_arr = img_arr.reshape((1,) + img_arr.shape)
-        #img = Image.fromarray(np.uint8(val))
+
         img = Image.fromarray(img_arr)
         stream = BytesIO()
         img.save(stream, format="jpeg")
-        #img.save(os.path.join(self.path, name))
         img_str = base64.b64encode(stream.getvalue()).decode()
         dat = {
             "steering_angle": angle, #[-1.0, 1.0]
@@ -182,11 +184,4 @@ class KerasClient():
             "telemetry",
             data=dat)
         
-        self.cv.acquire()
-        self.new_data = False
-        max_try = 0
-        while not self.new_data and max_try < 2:
-            self.cv.wait(1.0)
-            max_try += 1
-        self.cv.release()
         return self.steering_angle, self.throttle

@@ -90,7 +90,7 @@ def drive(cfg, model_path=None, use_chaos=False):
 
     rk = KerasClient(cfg.REMOTE_PILOT_HOST, cfg.REMOTE_PILOT_PORT)
     V.add(rk,
-          inputs=['cam/image_array', 'pilot/angle', 'pilot/throttle', 'timestamp'],
+          inputs=['cam/image_array', 'angle', 'throttle'],
           outputs=['pilot/angle', 'pilot/throttle'],
           run_condition='run_remote_pilot')
 
