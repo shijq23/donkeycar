@@ -247,7 +247,7 @@ class Sim(BaseCommand):
         parser.add_argument('--model', help='the model to use for predictions')
         parser.add_argument('--config', default='./config.py', help='location of config file to use. default: ./config.py')
         #parser.add_argument('--type', default='categorical', help='model type to use when loading. categorical|linear')
-        parser.add_argument('--top_speed', default='3', help='what is top speed to drive')
+        parser.add_argument('--top_speed', default='4.0', help='what is top speed to drive')
         parsed_args = parser.parse_args(args)
         return parsed_args, parser
 

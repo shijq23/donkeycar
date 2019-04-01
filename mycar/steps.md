@@ -1,6 +1,6 @@
 # Opportunity: autonomous driving car
 
-![Opportunity](../donkeycar/parts/web_controller/templates/static/favicon.ico)
+![Opportunity](./800px-NASA_Mars_Rover.jpg)
 
 ## setup raspberry pi
 

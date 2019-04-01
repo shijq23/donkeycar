@@ -96,8 +96,8 @@ class SteeringServer(object):
             # forward pass - inference
             steering, throttle = self.kpart.run(image_array)
 
-            # filter throttle here, as our NN doesn't always do a greate job
-            throttle = self.throttle_control(last_steering, last_throttle, speed, throttle)
+            # filter throttle here, as our NN doesn't always do a great job
+            # throttle = self.throttle_control(last_steering, last_throttle, speed, throttle)
 
             # simulator will scale our steering based on it's angle based input.
             # but we have an opportunity for more adjustment here.

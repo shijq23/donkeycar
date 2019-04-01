@@ -116,7 +116,7 @@ def default_linear():
     # categorical output of the angle
     angle_out = Dense(units=1, activation='linear', name='angle_out')(x)
 
-    # continous output of throttle
+    # continuous output of throttle
     throttle_out = Dense(units=1, activation='linear', name='throttle_out')(x)
 
     model = Model(inputs=[img_in], outputs=[angle_out, throttle_out])
@@ -129,7 +129,7 @@ def default_linear():
     return model
 
 
-class KerasClient():
+class KerasClient(object):
     def __init__(self, host="127.0.0.1", port=9090, *args, **kwargs):
         import socketio
         self.host = host
@@ -142,12 +142,15 @@ class KerasClient():
         self.sio.on('disconnect', handler=self.on_disconnect)
         self.steering_angle = 0.0
         self.throttle = 0.0
+        self.on = True
 
     def on_connect(self):
         print("connected")
+        self.connected = True
 
     def on_disconnect(self):
         print("disconneted")
+        self.connected = False
 
     def on_steer(self, data):
         # print("steer " + str(data))
@@ -160,8 +163,16 @@ class KerasClient():
         self.sio.connect(url)
         self.connected = True
 
+    def shutdown(self):
+        self.on = False
+        if self.connected:
+            self.sio.disconnect()
+        pass
+
     def run(self, img_arr, angle=0.0, throttle=0.0):
         import base64
+        if not self.on:
+            return 0.0, 0.0
         if not self.connected:
             self.connect()
         
