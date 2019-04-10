@@ -25,6 +25,7 @@ from donkeycar.parts.web_controller import LocalWebController
 from donkeycar.parts.clock import Timestamp
 from donkeycar.parts.datastore import TubGroup, TubWriter
 from donkeycar.parts.keras import KerasLinear, KerasClient
+from donkeycar.parts.ps3_controller import PS4JoystickController
 
 
 def drive(cfg, model_path=None, use_chaos=False):
@@ -51,6 +52,17 @@ def drive(cfg, model_path=None, use_chaos=False):
           inputs=['cam/image_array'],
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
+
+    # ctr = PS4JoystickController(
+    #    throttle_scale=cfg.JOYSTICK_MAX_THROTTLE,
+    #    steering_scale=cfg.JOYSTICK_STEERING_SCALE,
+    #    auto_record_on_throttle=cfg.AUTO_RECORD_ON_THROTTLE
+    # )
+
+    # V.add(ctr,
+    #     inputs=['cam/image_array'],
+    #      outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
+    #      threaded=True)
 
     # See if we should even run the local pilot module.
     # This is only needed because the part run_condition only accepts boolean
