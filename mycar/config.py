@@ -49,6 +49,11 @@ TUB_PATH = os.path.join(CAR_PATH, 'tub') # if using a single tub
 #ROPE.DONKEYCAR.COM
 ROPE_TOKEN="GET A TOKEN AT ROPE.DONKEYCAR.COM"
 
+#JOYSTICK
+JOYSTICK_STEERING_SCALE = 1.0
+JOYSTICK_MAX_THROTTLE = 1.0
+AUTO_RECORD_ON_THROTTLE = True
+
 #REMOTE_PILOT
 REMOTE_PILOT_HOST = "192.168.2.35" # remote pilot server hostname or ip
 REMOTE_PILOT_PORT = 9090         # remote pilot server port
