@@ -26,8 +26,7 @@ community contributions.
 * Use existing CAD models for design upgrades.
 
 ### Hardware
-* SunFounder Smart Video Car Kit v2.0/SunFounder PiCar V
-
+* [SunFounder Smart Video Car Kit V2.0/SunFounder PiCar V](https://www.sunfounder.com/smart-video-car-kit-v2-0.html)
 * Raspberry Pi 3 model B+
 
 ### Get driving.
