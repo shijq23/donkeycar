@@ -54,6 +54,7 @@
 
 ```bash
     sudo apt-get install python-opencv
+    pip3 install opencv-python
 ```
 
 ### install keras
