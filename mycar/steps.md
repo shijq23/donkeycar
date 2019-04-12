@@ -27,7 +27,7 @@
 ### create a virtualenv
 
 ```bash
-    python3 -m virtualenv .env
+    virtualenv .env --python=python3
     source .env/bin/activate
 ```
 
