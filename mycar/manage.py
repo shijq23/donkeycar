@@ -16,17 +16,8 @@ import os
 from docopt import docopt
 import donkeycar as dk
 
-from donkeycar.parts.usbcam import PiCamera
-from donkeycar.parts.transform import Lambda
-from donkeycar.parts.keras import KerasLinear
-from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle, SunFounder_Motor_Hat
-from donkeycar.parts.datastore import TubGroup, TubWriter
-from donkeycar.parts.web_controller import LocalWebController
-from donkeycar.parts.clock import Timestamp
 from donkeycar.parts.datastore import TubGroup, TubWriter
 from donkeycar.parts.keras import KerasLinear, KerasClient
-from donkeycar.parts.ps3_controller import PS4JoystickController
-
 
 def drive(cfg, model_path=None, use_chaos=False):
     """
@@ -38,6 +29,12 @@ def drive(cfg, model_path=None, use_chaos=False):
     Parts may have named outputs and inputs. The framework handles passing named outputs
     to parts requesting the same named input.
     """
+    from donkeycar.parts.usbcam import PiCamera
+    from donkeycar.parts.transform import Lambda
+    from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle, SunFounder_Motor_Hat
+    from donkeycar.parts.web_controller import LocalWebController
+    from donkeycar.parts.clock import Timestamp
+    from donkeycar.parts.ps3_controller import PS4JoystickController
 
     V = dk.vehicle.Vehicle()
 

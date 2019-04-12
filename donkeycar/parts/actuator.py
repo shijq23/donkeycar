@@ -138,6 +138,7 @@ class Adafruit_DCMotor_Hat:
     def shutdown(self):
         self.mh.getMotor(self.motor_num).run(Adafruit_MotorHAT.RELEASE)
 
+
 class SunFounder_ESC:
     def __init__(self,
                  max_pulse=1000,

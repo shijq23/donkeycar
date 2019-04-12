@@ -17,6 +17,7 @@ from flask import Flask
 from io import BytesIO
 import time
 
+
 class FPSTimer(object):
     def __init__(self):
         self.t = time.time()
@@ -89,7 +90,7 @@ class SteeringServer(object):
             # then as numpy array
             image_array = np.asarray(image)
 
-            # optional change to pre-preocess image before NN sees it
+            # optional change to pre-process image before NN sees it
             if self.image_part is not None:
                 image_array = self.image_part.run(image_array)
 
@@ -139,6 +140,7 @@ class SteeringServer(object):
         except KeyboardInterrupt:
             # unless some hits Ctrl+C and then we get this interrupt
             print('stopping')
+
 
 class MovingSquareTelemetry:
     """

@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 import glob
 
+
 class PiCamera():
     def __init__(self, resolution=(120, 160), framerate=7):
         self.video = cv2.VideoCapture(0)
@@ -12,15 +13,16 @@ class PiCamera():
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1]) #SCREEN_HIGHT
         print('video resolution h, w {0}'.format(resolution))
         # Find OpenCV version
+        print('OpenCV version %s' % cv2.__version__)
         (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
         
         # With webcam get(CV_CAP_PROP_FPS) does not work.
         # Let's see for ourselves.
         
-        if int(major_ver) < 3 :
+        if int(major_ver) < 3:
             fps = self.video.get(cv2.cv.CV_CAP_PROP_FPS)
             print("Frames per second using video.get(cv2.cv.CV_CAP_PROP_FPS): {0}".format(fps))
-        else :
+        else:
             fps = self.video.get(cv2.CAP_PROP_FPS)
             print("Frames per second using video.get(cv2.CAP_PROP_FPS) : {0}".format(fps))
 

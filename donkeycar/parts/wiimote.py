@@ -12,6 +12,7 @@
 import os, struct, array, time
 from fcntl import ioctl
 
+
 class WiiMote():
     # These constants were borrowed from linux/input.h
     axis_names = {
