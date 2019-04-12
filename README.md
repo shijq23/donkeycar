@@ -25,6 +25,10 @@ community contributions.
 * Leverage community contributed driving data.
 * Use existing CAD models for design upgrades.
 
+### Hardware
+* SunFounder Smart Video Car Kit v2.0
+* Raspberry Pi 3 model B+
+
 ### Get driving.
 After building a Donkey2 you can turn on your car and go to http://localhost:8887 to drive.
 
