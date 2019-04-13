@@ -10,7 +10,7 @@ import donkeycar as dk
 
 class PCA9685:
     """
-    PWM motor controler using PCA9685 boards.
+    PWM motor controller using PCA9685 boards.
     This is used for most RC Cars
     """
     def __init__(self, channel, frequency=60):
@@ -32,7 +32,7 @@ class PCA9685:
 
 class PWMSteering:
     """
-    Wrapper over a PWM motor cotnroller to convert angles to PWM pulses.
+    Wrapper over a PWM motor controller to convert angles to PWM pulses.
     """
     LEFT_ANGLE = -1
     RIGHT_ANGLE = 1
@@ -60,7 +60,7 @@ class PWMSteering:
 
 class PWMThrottle:
     """
-    Wrapper over a PWM motor cotnroller to convert -1 to 1 throttle
+    Wrapper over a PWM motor controller to convert -1 to 1 throttle
     values to PWM pulses.
     """
     MIN_THROTTLE = -1
@@ -140,6 +140,9 @@ class Adafruit_DCMotor_Hat:
 
 
 class SunFounder_ESC:
+    """
+    Software ESC for SunFounder Smart Video Car Kit V2.0/SunFounder PiCar V
+    """
     def __init__(self,
                  max_pulse=1000,
                  min_pulse=0,
@@ -206,7 +209,7 @@ class SunFounder_Motor_Hat:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(SunFounder_Motor_Hat.Motor_A, GPIO.OUT)
         GPIO.setup(SunFounder_Motor_Hat.Motor_B, GPIO.OUT)
-        if mode != None:
+        if mode is not None:
             GPIO.setmode(mode)
 
         self.esc = SunFounder_ESC(max_pulse, min_pulse, zero_pulse)
