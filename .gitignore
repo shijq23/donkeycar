@@ -18,7 +18,6 @@ build
 #IDE
 .idea
 .spyproject
-
 .pytest_cache
-
 .coverage
+.vscode

@@ -117,4 +117,4 @@ collect 10-20 laps of good dat
 
 ### run donkey simulator server
 
-```[pc]$ donkey sim --config ~/mycar/config.py --model ~/mycar/models/sim```
+```[pc]$ donkey sim --type linear --config ~/mycar/config.py --model ~/mycar/models/sim```
