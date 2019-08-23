@@ -609,6 +609,7 @@ def execute_from_command_line():
             'contrain': ConTrain,
             'cnnactivations': ShowCnnActivations,
             'update': UpdateCar,
+            'sim': Sim,
                 }
     
     args = sys.argv[:]

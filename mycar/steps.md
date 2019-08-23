@@ -86,7 +86,7 @@ If see error: moviepy 1.0.0 has requirement imageio<2.5,>=2.0, but you'll have i
 ```bash
     [pi]$ cd ~/donkeycar
     [pi]$ donkey createcar ~/mycar
-    [pi]$ cp mycar/*.py ~/mycar
+    [pi]$ cp mycar/*.py --path ~/mycar
 ```
 
 ### drive and collect data
