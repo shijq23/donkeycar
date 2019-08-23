@@ -7,11 +7,10 @@ Has settings for continuous training that will look for new files as it trains.
 Modify on_best_model if you wish continuous training to update your pi as it builds.
 You can drop this in your ~/mycar dir.
 Basic usage should feel familiar: python train.py --model models/mypilot
-You might need to do a: pip install scikit-learn
 
 
 Usage:
-    train.py [--tub=<tub1,tub2,..tubn>] [--file=<file> ...] (--model=<model>) [--transfer=<model>] [--type=(linear|latent|categorical|rnn|imu|behavior|3d|look_ahead)] [--continuous] [--aug]
+    train.py [--tub=<tub1,tub2,..tubn>] [--file=<file> ...] (--model=<model>) [--transfer=<model>] [--type=(linear|latent|categorical|rnn|imu|behavior|3d|look_ahead|tensorrt_linear|tflite_linear|coral_tflite_linear)] [--continuous] [--aug]
 
 Options:
     -h --help        Show this screen.
@@ -25,12 +24,11 @@ import time
 import zlib
 from os.path import basename, join, splitext, dirname
 import pickle
+import datetime
 
 from tensorflow.python import keras
 from docopt import docopt
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.utils import shuffle
 from PIL import Image
 
 import donkeycar as dk
@@ -53,48 +51,6 @@ except:
     do_plot = False
     print("matplotlib not installed")
     
-deterministic = False
-
-if deterministic:
-    import tensorflow as tf
-    import random as rn
-
-    # The below is necessary in Python 3.2.3 onwards to
-    # have reproducible behavior for certain hash-based operations.
-    # See these references for further details:
-    # https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
-    # https://github.com/fchollet/keras/issues/2280#issuecomment-306959926
-
-    os.environ['PYTHONHASHSEED'] = '0'
-
-    # The below is necessary for starting Numpy generated random numbers
-    # in a well-defined initial state.
-
-    np.random.seed(42)
-
-    # The below is necessary for starting core Python generated random numbers
-    # in a well-defined state.
-
-    rn.seed(12345)
-
-    # Force TensorFlow to use single thread.
-    # Multiple threads are a potential source of
-    # non-reproducible results.
-    # For further details, see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
-
-    session_conf = tf.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
-
-    from keras import backend as K
-
-    # The below tf.set_random_seed() will make random number generation
-    # in the TensorFlow backend have a well-defined initial state.
-    # For further details, see: https://www.tensorflow.org/api_docs/python/tf/set_random_seed
-
-    tf.set_random_seed(1234)
-
-    sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
-    K.set_session(sess)
-
 
 '''
 Tub management
@@ -258,13 +214,8 @@ class MyCPCallback(keras.callbacks.ModelCheckpoint):
 
 def on_best_model(cfg, model, model_filename):
 
-    model.save(model_filename)
-    #TODO figure out why keras in tensorflow has a problem with saving to json/weights
-    return
-
-    #Save json and weights file too
-    json_fnm, weights_fnm = save_json_and_weights(model, model_filename)
-
+    model.save(model_filename, include_optimizer=False)
+        
     if not cfg.SEND_BEST_MODEL_TO_PI:
         return
 
@@ -275,9 +226,7 @@ def on_best_model(cfg, model, model_filename):
     if not on_windows:
         print('sending model to the pi')
         
-        command = 'scp %s %s@%s:~/%s/models/;' % (weights_fnm, cfg.PI_USERNAME, cfg.PI_HOSTNAME, cfg.PI_DONKEY_ROOT)
-        command += 'scp %s %s@%s:~/%s/models/;' % (json_fnm, cfg.PI_USERNAME, cfg.PI_HOSTNAME, cfg.PI_DONKEY_ROOT)
-        command += 'scp %s %s@%s:~/%s/models/;' % (model_filename, cfg.PI_USERNAME, cfg.PI_HOSTNAME, cfg.PI_DONKEY_ROOT)
+        command = 'scp %s %s@%s:~/%s/models/;' % (model_filename, cfg.PI_USERNAME, cfg.PI_HOSTNAME, cfg.PI_DONKEY_ROOT)
     
         print("sending", command)
         res = os.system(command)
@@ -285,9 +234,9 @@ def on_best_model(cfg, model, model_filename):
 
     else: #yes, we are on windows machine
 
-    #On windoz no scp. In oder to use this you must first setup
-    #an ftp daemon on the pi. ie. sudo apt-get install vsftpd
-    #and then make sure you enable write permissions in the conf
+        #On windoz no scp. In order to use this you must first setup
+        #an ftp daemon on the pi. ie. sudo apt-get install vsftpd
+        #and then make sure you enable write permissions in the conf
         try:
             import paramiko
         except:
@@ -298,14 +247,6 @@ def on_best_model(cfg, model, model_filename):
         password = cfg.PI_PASSWD
         server = host
         files = []
-
-        localpath = weights_fnm
-        remotepath = '/home/%s/%s/%s' %(username, cfg.PI_DONKEY_ROOT, weights_fnm.replace('\\', '/'))
-        files.append((localpath, remotepath))
-
-        localpath = json_fnm
-        remotepath = '/home/%s/%s/%s' %(username, cfg.PI_DONKEY_ROOT, json_fnm.replace('\\', '/'))
-        files.append((localpath, remotepath))
 
         localpath = model_filename
         remotepath = '/home/%s/%s/%s' %(username, cfg.PI_DONKEY_ROOT, model_filename.replace('\\', '/'))
@@ -337,6 +278,26 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
     ''' 
     verbose = cfg.VEBOSE_TRAIN
 
+    if model_type is None:
+        model_type = cfg.DEFAULT_MODEL_TYPE
+
+    if "tflite" in model_type:
+        #even though we are passed the .tflite output file, we train with an intermediate .h5
+        #output and then convert to final .tflite at the end.
+        assert(".tflite" in model_name)
+        #we only support the linear model type right now for tflite
+        assert("linear" in model_type)
+        model_name = model_name.replace(".tflite", ".h5")
+    elif "tensorrt" in model_type:
+        #even though we are passed the .uff output file, we train with an intermediate .h5
+        #output and then convert to final .uff at the end.
+        assert(".uff" in model_name)
+        #we only support the linear model type right now for tensorrt
+        assert("linear" in model_type)
+        model_name = model_name.replace(".uff", ".h5")
+
+    if model_name and not '.h5' == model_name[-3:]:
+        raise Exception("Model filename should end with .h5")
     
     if continuous:
         print("continuous training")
@@ -344,7 +305,12 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
     gen_records = {}
     opts = { 'cfg' : cfg}
 
-    kl = get_model_by_type(model_type, cfg=cfg)
+    if "linear" in model_type:
+        train_type = "linear"
+    else:
+        train_type = model_type
+
+    kl = get_model_by_type(train_type, cfg=cfg)
 
     opts['categorical'] = type(kl) in [KerasCategorical, KerasBehavioral]
 
@@ -371,6 +337,7 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
     
     opts['keras_pilot'] = kl
     opts['continuous'] = continuous
+    opts['model_type'] = model_type
 
     extract_data_from_pickles(cfg, tub_names)
 
@@ -406,7 +373,7 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
 
             keys = list(data.keys())
 
-            keys = shuffle(keys)
+            random.shuffle(keys)
 
             kl = opts['keras_pilot']
 
@@ -453,6 +420,7 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
                     angles = []
                     throttles = []
                     out_img = []
+                    out = []
 
                     for record in batch_data:
                         #get image data if we don't already have it
@@ -485,12 +453,13 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
                         inputs_img.append(img_arr)
                         angles.append(record['angle'])
                         throttles.append(record['throttle'])
+                        out.append([record['angle'], record['throttle']])
 
                     if img_arr is None:
                         continue
 
                     img_arr = np.array(inputs_img).reshape(batch_size,\
-                        cfg.IMAGE_H, cfg.IMAGE_W, cfg.IMAGE_DEPTH)
+                        cfg.TARGET_H, cfg.TARGET_W, cfg.TARGET_D)
 
                     if has_imu:
                         X = [img_arr, np.array(inputs_imu)]
@@ -502,7 +471,7 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
                     if img_out:
                         y = [out_img, np.array(angles), np.array(throttles)]
                     elif model_out_shape[1] == 2:
-                        y = [np.array([angles, throttles])]
+                        y = [np.array([out]).reshape(batch_size, 2) ]
                     else:
                         y = [np.array(angles), np.array(throttles)]
 
@@ -511,6 +480,7 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
                     batch_data = []
     
     model_path = os.path.expanduser(model_name)
+
     
     #checkpoint to save model after each epoch and send best to the pi.
     save_best = MyCPCallback(send_model_cb=on_best_model,
@@ -546,11 +516,15 @@ def train(cfg, tub_names, model_name, transfer_model, model_type, continuous, au
     val_steps = num_val // cfg.BATCH_SIZE
     print('steps_per_epoch', steps_per_epoch)
 
+    cfg.model_type = model_type
+
     go_train(kl, cfg, train_gen, val_gen, gen_records, model_name, steps_per_epoch, val_steps, continuous, verbose, save_best)
 
     
     
 def go_train(kl, cfg, train_gen, val_gen, gen_records, model_name, steps_per_epoch, val_steps, continuous, verbose, save_best=None):
+
+    start = time.time()
 
     model_path = os.path.expanduser(model_name)
 
@@ -600,7 +574,10 @@ def go_train(kl, cfg, train_gen, val_gen, gen_records, model_name, steps_per_epo
                     
     full_model_val_loss = min(history.history['val_loss'])
     max_val_loss = full_model_val_loss + cfg.PRUNE_VAL_LOSS_DEGRADATION_LIMIT
-    
+
+    duration_train = time.time() - start
+    print("Training completed in %s." % str(datetime.timedelta(seconds=round(duration_train))) )
+
     print("\n\n----------- Best Eval Loss :%f ---------" % save_best.best)
 
     if cfg.SHOW_PLOT:
@@ -636,6 +613,62 @@ def go_train(kl, cfg, train_gen, val_gen, gen_records, model_name, steps_per_epo
                 print("not saving loss graph because matplotlib not set up.")
         except Exception as ex:
             print("problems with loss graph: {}".format( ex ) )
+
+    #Save tflite, optionally in the int quant format for Coral TPU
+    if "tflite" in cfg.model_type:
+        print("\n\n--------- Saving TFLite Model ---------")
+        tflite_fnm = model_path.replace(".h5", ".tflite")
+        assert(".tflite" in tflite_fnm)
+
+        prepare_for_coral = "coral" in cfg.model_type
+
+        if prepare_for_coral:
+            #compile a list of records to calibrate the quantization
+            data_list = []
+            max_items = 1000
+            for key, _record in gen_records.items():
+                data_list.append(_record)
+                if len(data_list) == max_items:
+                    break   
+
+            stride = 1
+            num_calibration_steps = len(data_list) // stride
+
+            #a generator function to help train the quantizer with the expected range of data from inputs
+            def representative_dataset_gen():
+                start = 0
+                end = stride
+                for _ in range(num_calibration_steps):
+                    batch_data = data_list[start:end]
+                    inputs = []
+                
+                    for record in batch_data:
+                        filename = record['image_path']                        
+                        img_arr = load_scaled_image_arr(filename, cfg)
+                        inputs.append(img_arr)
+
+                    start += stride
+                    end += stride
+
+                    # Get sample input data as a numpy array in a method of your choosing.
+                    yield [ np.array(inputs, dtype=np.float32).reshape(stride, cfg.TARGET_H, cfg.TARGET_W, cfg.TARGET_D) ]
+        else:
+            representative_dataset_gen = None
+
+        from donkeycar.parts.tflite import keras_model_to_tflite
+        keras_model_to_tflite(model_path, tflite_fnm, representative_dataset_gen)
+        print("Saved TFLite model:", tflite_fnm)
+        if prepare_for_coral:
+            print("compile for Coral w: edgetpu_compiler", tflite_fnm)
+            os.system("edgetpu_compiler " + tflite_fnm)
+
+    #Save tensorrt
+    if "tensorrt" in cfg.model_type:
+        print("\n\n--------- Saving TensorRT Model ---------")
+        # TODO RAHUL
+        # flatten model_path
+        # convert to uff
+        # print("Saved TensorRT model:", uff_filename)
 
     if cfg.PRUNE_CNN:
         base_model_path = splitext(model_name)[0]
@@ -798,7 +831,7 @@ def sequence_train(cfg, tub_names, model_name, transfer_model, model_type, conti
     print("collated", len(sequences), "sequences of length", target_len)
 
     #shuffle and split the data
-    train_data, val_data  = train_test_split(sequences, shuffle=True, test_size=(1 - cfg.TRAIN_TEST_SPLIT))
+    train_data, val_data  = train_test_split(sequences, test_size=(1 - cfg.TRAIN_TEST_SPLIT))
 
 
     def generator(data, opt, batch_size=cfg.BATCH_SIZE):
@@ -806,7 +839,7 @@ def sequence_train(cfg, tub_names, model_name, transfer_model, model_type, conti
 
         while True:
             #shuffle again for good measure
-            data = shuffle(data)
+            random.shuffle(data)
 
             for offset in range(0, num_records, batch_size):
                 batch_data = data[offset:offset+batch_size]
@@ -869,12 +902,12 @@ def sequence_train(cfg, tub_names, model_name, transfer_model, model_type, conti
                 
                 if look_ahead:
                     X = [np.array(b_inputs_img).reshape(batch_size,\
-                        cfg.IMAGE_H, cfg.IMAGE_W, cfg.SEQUENCE_LENGTH)]
+                        cfg.TARGET_H, cfg.TARGET_W, cfg.SEQUENCE_LENGTH)]
                     X.append(np.array(b_vec_in))
                     y = np.array(b_labels).reshape(batch_size, (cfg.SEQUENCE_LENGTH + 1) * 2)
                 else:
                     X = [np.array(b_inputs_img).reshape(batch_size,\
-                        cfg.SEQUENCE_LENGTH, cfg.IMAGE_H, cfg.IMAGE_W, cfg.IMAGE_DEPTH)]
+                        cfg.SEQUENCE_LENGTH, cfg.TARGET_H, cfg.TARGET_W, cfg.TARGET_D)]
                     y = np.array(b_labels).reshape(batch_size, 2)
 
                 yield X, y
@@ -898,6 +931,8 @@ def sequence_train(cfg, tub_names, model_name, transfer_model, model_type, conti
     if steps_per_epoch < 2:
         raise Exception("Too little data to train. Please record more records.")
     
+    cfg.model_type = model_type
+
     go_train(kl, cfg, train_gen, val_gen, gen_records, model_name, steps_per_epoch, val_steps, continuous, verbose)
     
     ''' 

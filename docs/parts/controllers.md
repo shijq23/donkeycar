@@ -19,7 +19,7 @@ The default web controller may be replaced with a one line change to use a physi
 ### These joysticks are known to work:
 
 * [Logitech Gamepad F710](https://www.amazon.com/Logitech-940-000117-Gamepad-F710/dp/B0041RR0TW)
-* [Sony PS3 Sixaxis OEM](https://www.ebay.com/sch/i.html?&_nkw=Sony+PS3+Sixaxis+OEM)
+* [Sony PS3 Sixaxis OEM](https://www.ebay.com/sch/i.html?&_nkw=Sony+PS3+Sixaxis+OEM) (Not compatible with Jetson Nano)
 * [Sony PS4 Dualshock OEM](https://www.ebay.com/sch/i.html?&_nkw=Sony+PS4+Dualshock+OEM)
 * [WiiU Pro](https://www.amazon.com/Nintendo-Wii-U-Pro-Controller-Black/dp/B00MUY0OFU)
 * [XBox Controller](https://www.amazon.com/Xbox-Wireless-Controller-Blue-one/dp/B01M0F0OIY)
@@ -223,5 +223,25 @@ quit
 
 Now that your controller is trusted, it should automatically connect with your Raspberry Pi when they are both turned on.  If your controller fails to connect, run the bluetoothctl steps again to reconnect.
 
+## Discovering / Modifying Button and Axis Mappings for Game Controllers
 
+To discover and modify your default button mappings (for your controllers) you can use the `Joystick` class defined in `donkeycar.parts.controller`.
 
+After setting up `Donkey` and activating your `virtualenv` you can do the following.
+First launch a `python` shell session.
+
+```python
+from donkeycar.parts.controller import Joystick
+
+joystick = Joystick() # uses the connected joystick at /dev/input/js0
+
+joystick.init() # Initialize
+
+joystick.show_map() # Will give you a list of axes and buttons detected.
+
+# Now you can use the controller and check for the outputs. This will
+# tell you which buttons and axes are active when you are using the
+# controller.
+while True:
+    joystick.poll()
+```

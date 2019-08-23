@@ -7,9 +7,11 @@ Created on Sun Jun 25 10:44:24 2017
 """
 
 import time
+from statistics import median
 from threading import Thread
 from .memory import Memory
 from prettytable import PrettyTable
+
 
 class PartProfiler:
     def __init__(self):
@@ -33,18 +35,23 @@ class PartProfiler:
     def report(self):
         print("Part Profile Summary: (times in ms)")
         pt = PrettyTable()
-        pt.field_names =["part", "max", "min", "avg"]
+        pt.field_names = ["part", "max", "min", "avg", "median"]
         for p, val in self.records.items():
-            arr = val['times']
+            # remove first and last entry because you there could be one-off
+            # time spent in initialisations, and the latest diff could be
+            # incomplete because of user keyboard interrupt
+            arr = val['times'][1:-1]
             if len(arr) == 0:
                 continue
-            pt.add_row( [p.__class__.__name__ ,
-                "%.2f" % (max(arr) * 1000),
-                "%.2f" % (min(arr) * 1000),
-                "%.2f" % (sum(arr) / len(arr) * 1000) ])
+            pt.add_row([p.__class__.__name__,
+                        "%.2f" % (max(arr) * 1000),
+                        "%.2f" % (min(arr) * 1000),
+                        "%.2f" % (sum(arr) / len(arr) * 1000),
+                        "%.2f" % (median(arr) * 1000)])
         print(pt)
 
-class Vehicle():
+
+class Vehicle:
     def __init__(self, mem=None):
 
         if not mem:
@@ -102,7 +109,7 @@ class Vehicle():
         Start vehicle's main drive loop.
 
         This is the main thread of the vehicle. It starts all the new
-        threads for the threaded parts then starts an infinit loop
+        threads for the threaded parts then starts an infinite loop
         that runs each part and updates the memory.
 
         Parameters
@@ -112,8 +119,8 @@ class Vehicle():
             The max frequency that the drive loop should run. The actual
             frequency may be less than this if there are many blocking parts.
         max_loop_count : int
-            Maxiumum number of loops the drive loop should execute. This is
-            used for testing the all the parts of the vehicle work.
+            Maximum number of loops the drive loop should execute. This is
+            used for testing that all the parts of the vehicle work.
         """
 
         try:

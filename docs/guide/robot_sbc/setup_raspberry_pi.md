@@ -20,7 +20,7 @@
 
 You need to flash a micro SD image with an operating system.
 
-1. Download [Raspian Lite](https://downloads.raspberrypi.org/raspbian_lite_latest) (300MB). 
+1. Download [Raspian Lite(Stretch)](https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.zip) (352MB). 
 2. Follow OS specific guides [here](https://www.raspberrypi.org/documentation/installation/installing-images/).
 3. Leave micro SD card in your machine and edit/create some files as below:
 
@@ -190,7 +190,7 @@ git clone https://github.com/autorope/donkeycar
 cd donkeycar
 git checkout master
 pip install -e .[pi]
-pip install tensorflow
+pip install tensorflow==1.13.1
 ```
 
 You can validate your tensorflow install with
@@ -205,6 +205,12 @@ Warnings like this are normal:
   return f(*args, **kwds)
 /home/pi/env/lib/python3.5/importlib/_bootstrap.py:222: RuntimeWarning: builtins.type size changed, may indicate binary incompatibility. Expected 432, got 412
   return f(*args, **kwds)
+```
+
+Note: If you would like to try tflite support, you will need a newer version of Tensorflow. You can download and install this version:
+```bash
+wget https://tawn-train.s3.amazonaws.com/tf/tensorflow-2.0.0a0-cp35-cp35m-linux_armv7l.whl
+pip install tensorflow-2.0.0a0-cp35-cp35m-linux_armv7l.whl
 ```
 
 ##  Step 12: Install Optional OpenCV

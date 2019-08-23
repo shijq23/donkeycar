@@ -21,7 +21,7 @@ import donkeycar as dk
 from donkeycar.parts.datastore import TubHandler
 from donkeycar.parts.controller import LocalWebController
 from donkeycar.parts.camera import PiCamera
-
+from donkeycar.utils import *
 
 
 def drive(cfg, model_path=None, model_type=None):
@@ -67,7 +67,22 @@ def drive(cfg, model_path=None, model_type=None):
         from donkeycar.parts.sombrero import Sombrero
         s = Sombrero()
 
-    inputs=['cam/image_array']
+    class ImgPrecondition():
+        '''
+        precondition camera image for inference
+        '''
+        def __init__(self, cfg):
+            self.cfg = cfg
+
+        def run(self, img_arr):
+            return normalize_and_crop(img_arr, self.cfg)
+
+    V.add(ImgPrecondition(cfg),
+        inputs=['cam/image_array'],
+        outputs=['cam/normalized/cropped'],
+        run_condition='run_pilot')
+
+    inputs=['cam/normalized/cropped']
 
     def load_model(kl, model_path):
         start = time.time()
@@ -92,7 +107,7 @@ def drive(cfg, model_path=None, model_type=None):
     def load_model_json(kl, json_fnm):
         start = time.time()
         print('loading model json', json_fnm)
-        import keras
+        from tensorflow.python import keras
         try:
             with open(json_fnm, 'r') as handle:
                 contents = handle.read()
@@ -113,11 +128,15 @@ def drive(cfg, model_path=None, model_type=None):
 
         elif '.json' in model_path:
             #when we have a .json extension
-            #load the model from their and look for a matching
+            #load the model from there and look for a matching
             #.wts file with just weights
             load_model_json(kl, model_path)
             weights_path = model_path.replace('.json', '.weights')
             load_weights(kl, weights_path)
+
+        else:
+            print("ERR>> Unknown extension type on model file!!")
+            return
 
         outputs=['pilot/angle', 'pilot/throttle']
    

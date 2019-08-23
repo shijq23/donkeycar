@@ -115,7 +115,7 @@ Now let's setup `CMake` correctly so it generates the correct OpenCV bindings fo
 
 ```bash
 # Create a build directory
-cd projects/cv2
+cd projects/cv2/opencv
 mkdir build
 cd build
 
@@ -126,11 +126,11 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D INSTALL_C_EXAMPLES=OFF \
 	-D OPENCV_ENABLE_NONFREE=ON \
 	# Contrib path
-	-D OPENCV_EXTRA_MODULES_PATH=~/projects/cv2/opencv_contrib-4.1.0/modules \
+	-D OPENCV_EXTRA_MODULES_PATH=~/projects/cv2/opencv_contrib/modules \
 	# Your virtual environment's Python executable
 	# You need to specify the result of echo $(which python)
 	-D PYTHON_EXECUTABLE=~/env/bin/python \
-	-D BUILD_EXAMPLES=ON ../opencv-4.1.0
+	-D BUILD_EXAMPLES=ON ../opencv
 ```
 
 The `cmake` command should show a summary of the configuration. Make sure that the `Interpreter` is set to the Python executable associated to *your* virtualenv.  Note: there are several paths in the CMake setup, make sure they match where you downloaded and saved the OpenCV source.
@@ -204,7 +204,7 @@ print(cv2.__version__)
 * Change to a dir you would like to use as the head of your projects.
 
 ```
-cd projects
+cd ~/projects
 ```
 
 * Get the latest donkeycar from Github.

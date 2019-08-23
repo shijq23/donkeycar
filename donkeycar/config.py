@@ -36,6 +36,11 @@ class Config:
                 result.append((key, getattr(self,key)))
         return str(result)
 
+    def show(self):
+        for attr in dir(self):
+            if attr.isupper():
+                print(attr, ":", getattr(self, attr))
+
 
 
 def load_config(config_path=None):
@@ -59,8 +64,20 @@ def load_config(config_path=None):
         print("loading personal config over-rides")
         personal_cfg = Config()
         personal_cfg.from_pyfile(personal_cfg_path)
+        #personal_cfg.show()
+
         cfg.from_object(personal_cfg)
+
+        #print("final settings:")
+        #cfg.show()
         
+    
+    #derivative settings
+    if hasattr(cfg, 'IMAGE_H') and hasattr(cfg, 'IMAGE_W'): 
+        cfg.TARGET_H = cfg.IMAGE_H - cfg.ROI_CROP_TOP - cfg.ROI_CROP_BOTTOM
+        cfg.TARGET_W = cfg.IMAGE_W
+        cfg.TARGET_D = cfg.IMAGE_DEPTH
+
     print()
 
     print('config loaded')

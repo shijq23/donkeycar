@@ -60,7 +60,7 @@ class PiCamera(BaseCamera):
     def shutdown(self):
         # indicate that the thread should be stopped
         self.on = False
-        print('stoping PiCamera')
+        print('Stopping PiCamera')
         time.sleep(.5)
         self.stream.close()
         self.rawCapture.close()
@@ -139,11 +139,12 @@ class CSICamera(BaseCamera):
         'videoconvert ! '
         'video/x-raw, format=(string)BGR ! appsink'  % (capture_width,capture_height,framerate,flip_method,display_width,display_height))
     
-    def __init__(self, image_w=160, image_h=120, image_d=3, framerate=60):
+    def __init__(self, image_w=160, image_h=120, image_d=3, framerate=60, gstreamer_flip=0):
         self.w = image_w
         self.h = image_h
         self.running = True
         self.frame = None
+        self.flip_method = gstreamer_flip
 
     def init_camera(self):
         import cv2
@@ -152,8 +153,8 @@ class CSICamera(BaseCamera):
         self.camera = cv2.VideoCapture(\
             self.gstreamer_pipeline(\
                 display_width=self.w,\
-                    display_height=self.h,
-                    flip_method=0),
+                    display_height=self.h,\
+                    flip_method=self.flip_method),
                     cv2.CAP_GSTREAMER)
 
         self.poll_camera()
@@ -166,7 +167,9 @@ class CSICamera(BaseCamera):
             self.poll_camera()
 
     def poll_camera(self):
-        self.ret , self.frame = self.camera.read()
+        import cv2
+        self.ret , frame = self.camera.read()
+        self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     def run(self):
         self.poll_camera()
@@ -250,7 +253,7 @@ class MockCamera(BaseCamera):
         if image is not None:
             self.frame = image
         else:
-            self.frame = Image.new('RGB', (image_w, image_h))
+            self.frame = np.array(Image.new('RGB', (image_w, image_h)))
 
     def update(self):
         pass
