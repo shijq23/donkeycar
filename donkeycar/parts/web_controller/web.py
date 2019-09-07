@@ -175,7 +175,7 @@ class VideoAPI(tornado.web.RequestHandler):
     Serves a MJPEG of the images posted from the vehicle. 
     '''
     async def get(self):
-        ioloop = tornado.ioloop.IOLoop.current()
+
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
         #self.set_header('Connection', 'close')
         self.set_header( 'Pragma', 'no-cache')

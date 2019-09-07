@@ -101,7 +101,11 @@ collect 10-20 laps of good dat
 
 ### train a model
 
-```[pc]$ python3 ~/mycar/manage.py train --tub <tub folder names comma separated> --model ./models/mypilot```
+```[pc]$ python3 ~/mycar/manage.py train --type=linear --tub=<tub folder names comma separated> --model=./models/mypilot```
+
+### view tensorboard
+
+```tensorboard --logdir=path/to/.tb_logs```
 
 ### transfer your pilot back to your car
 

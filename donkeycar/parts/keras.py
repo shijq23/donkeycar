@@ -113,7 +113,7 @@ class KerasPilot(object):
                             embeddings_metadata=None,
                             embeddings_data=None,
                             update_freq='epoch')
-
+        callbacks_list.append(board)
 
         if use_early_stop:
             callbacks_list.append(early_stop)

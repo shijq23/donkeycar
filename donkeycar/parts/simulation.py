@@ -44,7 +44,7 @@ class SteeringServer(object):
     Prebuilt simulators available:
     Windows: https://drive.google.com/file/d/0BxSsaxmEV-5YRC1ZWHZ4Y1dZTkE/view?usp=sharing
     '''
-    def __init__(self, _sio, kpart, top_speed=4.0, image_part=None, steering_scale=1.0):
+    def __init__(self, _sio, kpart, top_speed=1.0, image_part=None, steering_scale=1.0):
         self.model = None
         self.timer = FPSTimer()
         self.sio = _sio
@@ -60,7 +60,7 @@ class SteeringServer(object):
         super basic throttle control, derive from this Server and override as needed
         '''
         if speed < self.top_speed:
-            return 0.3
+            return 0.1
 
         return 0.0
 
@@ -98,7 +98,7 @@ class SteeringServer(object):
             steering, throttle = self.kpart.run(image_array)
 
             # filter throttle here, as our NN doesn't always do a great job
-            # throttle = self.throttle_control(last_steering, last_throttle, speed, throttle)
+            throttle = self.throttle_control(last_steering, last_throttle, speed, throttle)
 
             # simulator will scale our steering based on it's angle based input.
             # but we have an opportunity for more adjustment here.
