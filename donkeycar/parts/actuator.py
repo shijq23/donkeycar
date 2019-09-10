@@ -303,10 +303,10 @@ class SunFounder_ESC:
             self.throttle = 0
         elif speed > 0:
             direction = SunFounder_Motor_Hat.FORWARD
-            self.throttle = int(dk.util.data.map_range(speed, 0, 1, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
+            self.throttle = int(dk.utils.map_range(speed, 0, 1, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
         else:
             direction = SunFounder_Motor_Hat.BACKWARD
-            self.throttle = int(dk.util.data.map_range(speed, -1, 0, SunFounder_Motor_Hat.PWM_MAX_SPEED, SunFounder_Motor_Hat.PWM_MIN_SPEED))
+            self.throttle = int(dk.utils.map_range(speed, -1, 0, SunFounder_Motor_Hat.PWM_MAX_SPEED, SunFounder_Motor_Hat.PWM_MIN_SPEED))
         return (direction, self.throttle)
 
     def getPWM_pulse(self, pulse):
@@ -318,10 +318,10 @@ class SunFounder_ESC:
             self.throttle = 0
         elif pulse > self.zero_pulse:
             direction = SunFounder_Motor_Hat.FORWARD
-            self.throttle = int(dk.util.data.map_range(pulse, self.zero_pulse, self.max_pulse, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
+            self.throttle = int(dk.utils.map_range(pulse, self.zero_pulse, self.max_pulse, SunFounder_Motor_Hat.PWM_MIN_SPEED, SunFounder_Motor_Hat.PWM_MAX_SPEED))
         else:
             direction = SunFounder_Motor_Hat.BACKWARD
-            self.throttle = int(dk.util.data.map_range(pulse, self.min_pulse, self.zero_pulse, SunFounder_Motor_Hat.PWM_MAX_SPEED, SunFounder_Motor_Hat.PWM_MIN_SPEED))
+            self.throttle = int(dk.utils.map_range(pulse, self.min_pulse, self.zero_pulse, SunFounder_Motor_Hat.PWM_MAX_SPEED, SunFounder_Motor_Hat.PWM_MIN_SPEED))
         return (direction, self.throttle)
 
 
