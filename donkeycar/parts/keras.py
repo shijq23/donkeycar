@@ -151,7 +151,7 @@ class KerasCategorical(KerasPilot):
         self.model.compile(optimizer=self.optimizer, metrics=['acc'],
                   loss={'angle_out': 'categorical_crossentropy', 
                         'throttle_out': 'categorical_crossentropy'},
-                  loss_weights={'angle_out': 0.5, 'throttle_out': 1.0})
+                  loss_weights={'angle_out': 1.0, 'throttle_out': 1.0})
         
     def run(self, img_arr):
         if img_arr is None:
@@ -162,7 +162,7 @@ class KerasCategorical(KerasPilot):
         angle_binned, throttle = self.model.predict(img_arr)
         N = len(throttle[0])
         throttle = dk.utils.linear_unbin(throttle, N=N, offset=0.0, R=self.throttle_range)
-        angle_unbinned = dk.utils.linear_unbin(angle_binned)
+        angle_unbinned = dk.utils.linear_unbin(angle_binned, N=15, offset=-1, R=2.0)
         return angle_unbinned, throttle
     
     

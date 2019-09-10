@@ -252,8 +252,8 @@ class Sim(BaseCommand):
     def parse_args(self, args):
         parser = argparse.ArgumentParser(prog='sim')
         parser.add_argument('--model', help='the model to use for predictions')
-        parser.add_argument('--config', default='~/mycar/config.py', help='location of config file to use. default: ./config.py')
-        parser.add_argument('--type', default='linear', help='model type to use when loading. categorical|linear')
+        parser.add_argument('--config', default='./config.py', help='location of config file to use. default: ./config.py')
+        parser.add_argument('--type', default='categorical', help='model type to use when loading. categorical|linear')
         parser.add_argument('--top_speed', default='1.0', help='what is top speed to drive')
         parsed_args = parser.parse_args(args)
         return parsed_args, parser
