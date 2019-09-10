@@ -45,6 +45,8 @@ matplotlib can be a pain to setup on a Mac. So handle the case where it is absen
 use it to generate a plot of training results.
 '''
 try:
+    import matplotlib
+    matplotlib.use("agg")
     import matplotlib.pyplot as plt
     do_plot = True
 except:
