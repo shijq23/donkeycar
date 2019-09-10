@@ -502,7 +502,7 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None, camera_type
         V.add(motor, inputs=["throttle"])
 
     elif cfg.DRIVE_TRAIN_TYPE == "SUNFOUNDER_PWM":
-        from donkeycar.parts.actuator import SunFounder_Motor_Hat, PWMSteering
+        from donkeycar.parts.actuator import PCA9685, SunFounder_Motor_Hat, PWMSteering
         steering_controller = PCA9685(cfg.STEERING_CHANNEL)
         steering = PWMSteering(controller=steering_controller,
                            left_pulse=cfg.STEERING_LEFT_PWM,

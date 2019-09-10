@@ -91,7 +91,7 @@ If see error: moviepy 1.0.0 has requirement imageio<2.5,>=2.0, but you'll have i
 
 ### drive and collect data
 
-```[pi]$ python3 manager.py drive```
+```[pi]$ python3 manager.py drive --model ~/mmcar/models/linear.h5```
 
 collect 10-20 laps of good dat
 
