@@ -25,6 +25,9 @@ THROTTLE_MIN_PWM = 500          #pwm value for min movement (throttle -> 0)
 #THROTTLE_ZERO_PWM = 0          #pwm value for no movement (throttle = 0)
 
 
+#JOYSTICK
+CONTROLLER_TYPE='ps4'
+
 #REMOTE_PILOT
 REMOTE_PILOT_HOST = "192.168.2.35" # remote pilot server hostname or ip
 REMOTE_PILOT_PORT = 9090           # remote pilot server port
