@@ -508,13 +508,8 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None, camera_type
                            left_pulse=cfg.STEERING_LEFT_PWM,
                            right_pulse=cfg.STEERING_RIGHT_PWM)
 
-        throttle_controller = SunFounder_Motor_Hat(max_pulse=cfg.THROTTLE_FORWARD_PWM,
-                           zero_pulse=cfg.THROTTLE_STOPPED_PWM,
-                           min_pulse=cfg.THROTTLE_REVERSE_PWM)
-        throttle = PWMThrottle(controller=throttle_controller,
-                           max_pulse=cfg.THROTTLE_FORWARD_PWM,
-                           zero_pulse=cfg.THROTTLE_STOPPED_PWM,
-                           min_pulse=cfg.THROTTLE_REVERSE_PWM)
+        throttle = SunFounder_Motor_Hat(max_pulse=cfg.THROTTLE_MAX_PWM,
+                           min_pulse=cfg.THROTTLE_MIN_PWM)
 
         V.add(steering, inputs=['angle'])
         V.add(throttle, inputs=['throttle'])
