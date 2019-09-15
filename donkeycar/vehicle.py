@@ -131,6 +131,7 @@ class Vehicle:
                 if entry.get('thread'):
                     #start the update thread
                     entry.get('thread').start()
+                    print('Startng update thread {}.'.format(entry['part'].__class__.__name__))
 
             #wait until the parts warm up.
             print('Starting vehicle...')
@@ -206,6 +207,7 @@ class Vehicle:
         for entry in self.parts:
             try:
                 entry['part'].shutdown()
+                print('Stoping part {}.'.format(entry['part'].__class__.__name__))
             except AttributeError:
                 #usually from missing shutdown method, which should be optional
                 pass
