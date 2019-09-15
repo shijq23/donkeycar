@@ -342,7 +342,7 @@ class SunFounder_Motor_Hat:
         """
         import RPi.GPIO as GPIO
         if throttle > 1 or throttle < -1:
-            raise ValueError("throttle must be between 1(forward) and -1(reverse)")
+            raise ValueError("throttle must be between 1(forward) and -1(reverse), but {}".format(throttle))
         if self.throttle == throttle:
             return
         self.throttle = throttle

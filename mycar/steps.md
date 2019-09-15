@@ -104,7 +104,7 @@ collect 10-20 laps of good data
 
 ### train a model
 
-```[pc]$ python3 ~/mycar/manage.py train --type=linear --tub=<tub folder names comma separated> --model=~/mycar/models/mypilot```
+```[pc]$ python3 ~/mycar/manage.py train --type=linear --tub=<tub folder names comma separated> --model=~/mycar/models/mypilot.h5```
 
 ### view tensorboard
 
@@ -125,3 +125,18 @@ collect 10-20 laps of good data
 ### run donkey simulator server
 
 ```[pc]$ donkey sim --type=linear --config=~/mycar/config.py --model=~/mycar/models/sim```
+
+### show prediction plots
+
+```[pc]$ donkey tubplot --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear```
+
+### make movie from tub
+
+```[pc]$ pip install keras-vis```
+```[pc]$ donkey makemove --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear --out=<name>.mp4```
+```[pc]$ vlc tub_movie.mp4```
+
+### show tub histogram
+
+```[pc]$donkey tubhist --tub=data/tub_1_19-09-14```
+```[pc]$donkey tubhist --tub=data/tub_1_19-09-14 --record="user/angle"```

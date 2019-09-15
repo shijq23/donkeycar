@@ -18,7 +18,7 @@ from PIL import Image
 from io import BytesIO
 import tensorflow as tf
 
-print("TensorFlow version %s" % tf.VERSION)
+print("TensorFlow version %s" % tf.version.VERSION)
 print("TensorFlow.keras version %s" % tf.keras.__version__)
 
 
