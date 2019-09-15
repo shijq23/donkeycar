@@ -1,13 +1,9 @@
 # donkeycar: a python self driving library
 
-This is a fork from [Donkeycar](http://donkeycar.com). This fork has the following enhancement.
+This is a fork from [Donkeycar](http://donkeycar.com). This fork has the following enhancements.
 
 * use SunFounder Smart Video Car Kit V2.0/SunFound PiCar V
-* use usb camera
-* add software ESC tuned for SunFounder car
-* enable Client/Server model
-* add remote autopilot
-* enable ps4 game controller
+* enable SONY DUALSHOCK 4 Wireless Controller for PS4
 
 ## Quick Links
 
@@ -19,7 +15,8 @@ This is a fork from [Donkeycar](http://donkeycar.com). This fork has the followi
 
 * [SunFounder Smart Video Car Kit V2.0/SunFounder PiCar V](https://www.sunfounder.com/smart-video-car-kit-v2-0.html)
 * Raspberry Pi 3 model B+
+* SONY DUALSHOCK 4 Wireless Controller for PS4
 
 ### Get driving
 
-After building a Donkey2 you can turn on your car and go to <http://localhost:8887> to drive.
+After building a Donkey you can turn on your car and go to <http://donkey-host:8887> to drive.

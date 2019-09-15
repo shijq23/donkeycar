@@ -85,14 +85,18 @@ If see error: moviepy 1.0.0 has requirement imageio<2.5,>=2.0, but you'll have i
 
 ```bash
     [pi]$ cd ~/donkeycar
-    [pi]$ donkey createcar --path ~/mycar
+    [pi]$ donkey createcar --path ~/mycar --overwrite
 ```
 
 ### drive and collect data
 
-```[pi]$ python3 manager.py drive --model ~/mmcar/models/linear.h5```
+```[pi]$ python3 manager.py drive --model ~/mycar/models/linear.h5```
 
-collect 10-20 laps of good dat
+collect 10-20 laps of good data
+
+### drive with joystick
+
+```[pi]$ python3 manager.py drive --js --model ~/mycar/models/linear.h5```
 
 ### transfer data to PC
 
@@ -100,7 +104,7 @@ collect 10-20 laps of good dat
 
 ### train a model
 
-```[pc]$ python3 ~/mycar/manage.py train --type=linear --tub=<tub folder names comma separated> --model=./models/mypilot```
+```[pc]$ python3 ~/mycar/manage.py train --type=linear --tub=<tub folder names comma separated> --model=~/mycar/models/mypilot```
 
 ### view tensorboard
 
