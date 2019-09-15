@@ -176,10 +176,14 @@ class PWMSteering:
         self.controller = controller
         self.left_pulse = left_pulse
         self.right_pulse = right_pulse
+        self.angle = 1.1
 
 
     def run(self, angle):
         #map absolute angle to angle that vehicle can implement.
+        if self.angle == angle:
+            return
+        self.angle = angle
         pulse = dk.utils.map_range(angle,
                                 self.LEFT_ANGLE, self.RIGHT_ANGLE,
                                 self.left_pulse, self.right_pulse)
