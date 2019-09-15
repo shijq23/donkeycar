@@ -341,13 +341,13 @@ class SunFounder_Motor_Hat:
         Update the throttle of the motor where 1 is full forward and
         -1 is full backwards.
         """
+        import RPi.GPIO as GPIO
         if throttle > 1 or throttle < -1:
             raise ValueError("throttle must be between 1(forward) and -1(reverse)")
         if self.throttle == throttle:
             return
         self.throttle = throttle
         dir, pulse = self.getPWM_throttle(throttle)
-        import RPi.GPIO as GPIO
         if dir != self.dir:
             GPIO.output(SunFounder_Motor_Hat.Motor_A, dir)
             GPIO.output(SunFounder_Motor_Hat.Motor_B, dir)
@@ -358,8 +358,10 @@ class SunFounder_Motor_Hat:
             self.pulse = pulse
 
     def shutdown(self):
+        import RPi.GPIO as GPIO
         self.motor_a.run(0)
         self.motor_b.run(0)
+        GPIO.cleanup()
 
 class Maestro:
     '''
