@@ -286,10 +286,10 @@ class SunFounder_Motor_Hat:
     Used for each motor on a differential drive car.
     SunFounder Smart Video Car Kit V2.0/SunFounder PiCar V.
     """
-    Motor_A = 17
-    Motor_B = 27
-    PWM_A = 4
-    PWM_B = 5
+    Motor_A = 17 #GPIO pin for motor a
+    Motor_B = 27 #GPIO pin for motor b
+    PWM_A = 4 #pwm channel for motor a
+    PWM_B = 5 #pwm channel for motor b
     FORWARD = False
     BACKWARD = True
 
@@ -302,12 +302,9 @@ class SunFounder_Motor_Hat:
         self.max_pulse = 1200 if max_pulse == 0 else max_pulse
         self.min_pulse = 500 if min_pulse == 0 else min_pulse
 
-        mode = GPIO.getmode()
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(SunFounder_Motor_Hat.Motor_A, GPIO.OUT)
         GPIO.setup(SunFounder_Motor_Hat.Motor_B, GPIO.OUT)
-        if mode is not None:
-            GPIO.setmode(mode)
 
         self.motor_a = PCA9685(SunFounder_Motor_Hat.PWM_A)
         self.motor_b = PCA9685(SunFounder_Motor_Hat.PWM_B)
@@ -361,6 +358,8 @@ class SunFounder_Motor_Hat:
         import RPi.GPIO as GPIO
         self.motor_a.run(0)
         self.motor_b.run(0)
+        GPIO.output(SunFounder_Motor_Hat.Motor_A, GPIO.LOW)
+        GPIO.output(SunFounder_Motor_Hat.Motor_B, GPIO.LOW)
         GPIO.cleanup()
 
 class Maestro:
