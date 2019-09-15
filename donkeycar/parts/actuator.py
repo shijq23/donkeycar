@@ -297,7 +297,6 @@ class SunFounder_Motor_Hat:
                  max_pulse=1200,
                  min_pulse=500):
         import RPi.GPIO as GPIO
-        import atexit
     
         self.max_pulse = 1200 if max_pulse == 0 else max_pulse
         self.min_pulse = 500 if min_pulse == 0 else min_pulse
@@ -315,7 +314,6 @@ class SunFounder_Motor_Hat:
         self.motor_b.set_pulse(0)
         self.throttle = 0
         self.pulse = 0
-        atexit.register(self.shutdown)
 
     def getPWM_throttle(self, throttle):
         """
