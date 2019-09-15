@@ -206,7 +206,7 @@ class Vehicle:
         print('Shutting down vehicle and its parts...')
         for entry in self.parts:
             try:
-                print('Stoping part {}.'.format(entry['part'].__class__.__name__))
+                print('Stopping part {}.'.format(entry['part'].__class__.__name__))
                 entry['part'].shutdown()
             except AttributeError:
                 #usually from missing shutdown method, which should be optional
