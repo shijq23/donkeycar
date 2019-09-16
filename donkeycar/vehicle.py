@@ -204,7 +204,7 @@ class Vehicle:
 
     def stop(self):        
         print('Shutting down vehicle and its parts...')
-        for entry in self.parts:
+        for entry in reversed(self.parts):
             try:
                 print('Stopping part {}.'.format(entry['part'].__class__.__name__))
                 entry['part'].shutdown()
