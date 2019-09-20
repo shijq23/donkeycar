@@ -140,3 +140,7 @@ collect 10-20 laps of good data
 
 ```[pc]$donkey tubhist --tub=data/tub_1_19-09-14```
 ```[pc]$donkey tubhist --tub=data/tub_1_19-09-14 --record="user/angle"```
+
+### donkey gym config
+
+```[pc]vi ~/.config/unity3d/DefaultCompany/Donkeysim/prefs```
