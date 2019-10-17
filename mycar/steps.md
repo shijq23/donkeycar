@@ -154,3 +154,21 @@ collect 10-20 laps of good data
     [pc]$ cd donkeycar
     [pc]$ pip3 install -e .[tf]
 ```
+
+### donkey gym install
+
+```bash
+    [pc]$ download asset from https://github.com/tawnkramer/gym-donkeycar
+    [pc]$ git clone https://github.com/tawnkramer/gym-donkeycar
+    [pc]$ source .env/bin/active
+    [pc]$ pip install -e gym-donkeycar
+
+    [pc]$ vi ~/mycar/myconfig.py
+
+    DONKEY_GYM = True
+    DONKEY_SIM_PATH = "/home/dev/tool/DonkeySimLinux/donkey_sim.x86_64"
+    DONKEY_GYM_ENV_NAME = "donkey-generated-track-v0" # ("donkey-generated-track-v0"|"donkey-generated-roads-v0"|"donkey-warehouse-v0"|"donkey-avc-sparkfun-v0")
+
+    [pc]$ python ~/mycar/manage.py drive
+
+```
