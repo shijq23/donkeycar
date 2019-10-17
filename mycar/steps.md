@@ -144,3 +144,13 @@ collect 10-20 laps of good data
 ### donkey gym config
 
 ```[pc]vi ~/.config/unity3d/DefaultCompany/Donkeysim/prefs```
+
+### pc dev install
+
+```bash
+    [pc]$ apt install virtualenv
+    [pc]$ virtualenv .env --python=python3
+    [pc]$ source .env/bin/activate
+    [pc]$ cd donkeycar
+    [pc]$ pip3 install -e .[tf]
+```
