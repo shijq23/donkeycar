@@ -134,16 +134,21 @@ collect 10-20 laps of good data
 
 ```[pc]$ pip install keras-vis```
 ```[pc]$ donkey makemove --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear --out=<name>.mp4```
-```[pc]$ vlc tub_movie.mp4```
+```[pc]$ vlc tub_movie.mp4 or totem tub_movie.mp4```
+if cannot import name 'imresize' or 'cv2', then do the following
+```[pc]$ pip install -I scipy==1.2.*```
+```[pc]$ pip install opencv-python```
 
 ### show tub histogram
 
-```[pc]$donkey tubhist --tub=data/tub_1_19-09-14```
-```[pc]$donkey tubhist --tub=data/tub_1_19-09-14 --record="user/angle"```
+```[pc]$ pip install matplotlib```
+```[pc]$ sudo apt install python3-tk```
+```[pc]$ donkey tubhist --tub=data/tub_1_19-09-14```
+```[pc]$ donkey tubhist --tub=data/tub_1_19-09-14 --record="user/angle"```
 
 ### donkey gym config
 
-```[pc]vi ~/.config/unity3d/DefaultCompany/Donkeysim/prefs```
+```[pc]$ vi ~/.config/unity3d/DefaultCompany/Donkeysim/prefs```
 
 ### pc dev install
 
