@@ -21,3 +21,6 @@ build
 .pytest_cache
 .coverage
 .vscode
+
+# codecov
+htmlcov/
