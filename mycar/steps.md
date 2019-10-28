@@ -53,7 +53,7 @@
 ### install opencv
 
 ```bash
-    sudo apt-get install python-opencv
+    #sudo apt-get install python-opencv
     pip3 install opencv-python
 ```
 
@@ -67,6 +67,8 @@
 
 ```bash
     git clone -b dev https://github.com/shijq23/donkeycar.git
+    virtualenv .env --python=python3
+    source .env/bin/activate
     cd donkeycar
     pip3 install -e .[tf]
     #python3 scripts/setup.py
@@ -90,65 +92,91 @@ If see error: moviepy 1.0.0 has requirement imageio<2.5,>=2.0, but you'll have i
 
 ### drive and collect data
 
-```[pi]$ python3 manager.py drive --model ~/mycar/models/linear.h5```
+```bash
+    [pi]$ python3 manager.py drive --model ~/mycar/models/linear.h5
+```
 
 collect 10-20 laps of good data
 
 ### drive with joystick
 
-```[pi]$ python3 manager.py drive --js --model ~/mycar/models/linear.h5```
+```bash
+    [pi]$ python3 manager.py drive --js --model ~/mycar/models/linear.h5
+```
 
 ### transfer data to PC
 
-```[pc]$ rsync -r pi@<your_pi_ip_address>:~/mycar/tub/  ~/mycar/tub/```
+```bash
+    [pc]$ rsync -r pi@<your_pi_ip_address>:~/mycar/tub/  ~/mycar/tub/
+```
 
 ### train a model
 
-```[pc]$ python3 ~/mycar/manage.py train --type=linear --tub=<tub folder names comma separated> --model=~/mycar/models/mypilot.h5```
+```bash
+    [pc]$ python3 ~/mycar/manage.py train --type=linear --tub=<tub folder names comma separated> --model=~/mycar/models/mypilot.h5
+```
 
 ### view tensorboard
 
-```tensorboard --logdir=path/to/.tb_logs```
+```bash
+    tensorboard --logdir=path/to/.tb_logs
+```
 
 ### transfer your pilot back to your car
 
-```[pc]$ rsync -r ~/mycar/models/ pi@<your_ip_address>:~/mycar/models/```
+```bash
+    [pc]$ rsync -r ~/mycar/models/ pi@<your_ip_address>:~/mycar/models/
+```
 
 ### drive with your model
 
-```[pi]$ python3 manage.py drive --model ~/mycar/models/mypilot```
+```bash
+    [pi]$ python3 manage.py drive --model ~/mycar/models/mypilot
+```
 
 ### run donkey simulator client
 
-```[pc]$ donkey_sim.x86_64```
+```bash
+    [pc]$ donkey_sim.x86_64
+```
 
 ### run donkey simulator server
 
-```[pc]$ donkey sim --type=linear --config=~/mycar/config.py --model=~/mycar/models/sim```
+```bash
+    [pc]$ donkey sim --type=linear --config=~/mycar/config.py --model=~/mycar/models/sim
+```
 
 ### show prediction plots
 
-```[pc]$ donkey tubplot --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear```
+```bash
+    [pc]$ donkey tubplot --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear
+```
 
 ### make movie from tub
 
-```[pc]$ pip install keras-vis```
-```[pc]$ donkey makemove --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear --out=<name>.mp4```
-```[pc]$ vlc tub_movie.mp4 or totem tub_movie.mp4```
-if cannot import name 'imresize' or 'cv2', then do the following
-```[pc]$ pip install -I scipy==1.2.*```
-```[pc]$ pip install opencv-python```
+```bash
+    [pc]$ pip install keras-vis
+    [pc]$ donkey makemove --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear --out=<name>.mp4
+    [pc]$ vlc tub_movie.mp4 or totem tub_movie.mp4
+    #if cannot import name 'imresize' or 'cv2', then do the following
+    [pc]$ pip install -I scipy==1.2.*
+    [pc]$ pip install opencv-python
+```
 
 ### show tub histogram
 
-```[pc]$ pip install matplotlib```
-```[pc]$ sudo apt install python3-tk```
-```[pc]$ donkey tubhist --tub=data/tub_1_19-09-14```
-```[pc]$ donkey tubhist --tub=data/tub_1_19-09-14 --record="user/angle"```
+```bash
+    [pc]$ pip install matplotlib
+    [pc]$ sudo apt install python3-tk
+    [pc]$ donkey tubhist --tub=data/tub_1_19-09-14
+    [pc]$ donkey tubhist --tub=data/tub_1_19-09-14 --record="user/angle"
+```
 
 ### donkey gym config
 
-```[pc]$ vi ~/.config/unity3d/DefaultCompany/Donkeysim/prefs```
+```bash
+    [pc]$ vi ~/.config/unity3d/DefaultCompany/Donkeysim/prefs
+```
 
 ### pc dev install
 
