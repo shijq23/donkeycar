@@ -156,7 +156,7 @@ collect 10-20 laps of good data
 
 ```bash
     [pc]$ pip install keras-vis
-    [pc]$ donkey makemove --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear --out=<name>.mp4
+    [pc]$ donkey makemovie --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear --out=<name>.mp4
     [pc]$ vlc tub_movie.mp4 or totem tub_movie.mp4
     #if cannot import name 'imresize' or 'cv2', then do the following
     [pc]$ pip install -I scipy==1.2.*
