@@ -57,12 +57,6 @@
     pip3 install opencv-python
 ```
 
-### install keras
-
-```bash
-    pip3 install keras
-```
-
 ### install project
 
 ```bash
@@ -88,6 +82,13 @@ If see error: moviepy 1.0.0 has requirement imageio<2.5,>=2.0, but you'll have i
 ```bash
     [pi]$ cd ~/donkeycar
     [pi]$ donkey createcar --path ~/mycar --overwrite
+```
+
+### find car
+
+```bash
+    [pc]$ apt install nmap
+    [pc]$ donkey findcar
 ```
 
 ### drive and collect data
@@ -185,7 +186,18 @@ collect 10-20 laps of good data
     [pc]$ virtualenv .env --python=python3
     [pc]$ source .env/bin/activate
     [pc]$ cd donkeycar
-    [pc]$ pip3 install -e .[tf]
+    [pc]$ pip3 install -e .[tf,dev,pc]
+```
+
+### RPi install
+
+```bash
+    [pi]$ apt install virtualenv
+    [pi]$ virtualenv ~/env --python=python3
+    [pi]$ source ~/env/bin/activate
+    [pi]$ cd ~/donkeycar
+    [pi]$ pip3 install -e .[tf,pi]
+    [pi]$ donkey createcar --path ~/mycar --overwrite
 ```
 
 ### donkey gym install
