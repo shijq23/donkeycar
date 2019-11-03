@@ -1,13 +1,13 @@
 {
-    "python.pythonPath": ".env/bin/python",
+    "python.pythonPath": "env/bin/python",
     "files.exclude": {
-        "**/.env/*/**": true,
+        "**/env/*/**": true,
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
         "**/node_modules/*/**": true
     },
     "files.watcherExclude": {
-        "**/.env/*/**": true,
+        "**/env/*/**": true,
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
         "**/node_modules/*/**": true
