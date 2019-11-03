@@ -27,8 +27,8 @@
 ### create a virtualenv
 
 ```bash
-    virtualenv .env --python=python3
-    source .env/bin/activate
+    virtualenv env --python=python3
+    source env/bin/activate
 ```
 
 ### Pandas & Jupyter Requirements
@@ -61,8 +61,8 @@
 
 ```bash
     git clone -b dev https://github.com/shijq23/donkeycar.git
-    virtualenv .env --python=python3
-    source .env/bin/activate
+    virtualenv env --python=python3
+    source env/bin/activate
     cd donkeycar
     pip3 install -e .[tf]
     #python3 scripts/setup.py
@@ -183,8 +183,8 @@ collect 10-20 laps of good data
 
 ```bash
     [pc]$ apt install virtualenv
-    [pc]$ virtualenv .env --python=python3
-    [pc]$ source .env/bin/activate
+    [pc]$ virtualenv env --python=python3
+    [pc]$ source env/bin/activate
     [pc]$ cd donkeycar
     [pc]$ pip3 install -e .[tf,dev,pc]
 ```
@@ -205,7 +205,7 @@ collect 10-20 laps of good data
 ```bash
     [pc]$ download asset from https://github.com/tawnkramer/gym-donkeycar
     [pc]$ git clone https://github.com/tawnkramer/gym-donkeycar
-    [pc]$ source .env/bin/active
+    [pc]$ source env/bin/active
     [pc]$ pip install -e gym-donkeycar
 
     [pc]$ vi ~/mycar/myconfig.py
