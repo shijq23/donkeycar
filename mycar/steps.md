@@ -183,10 +183,10 @@ collect 10-20 laps of good data
 
 ```bash
     [pc]$ apt install virtualenv
+    [pc]$ cd donkeycar
     [pc]$ virtualenv env --python=python3
     [pc]$ source env/bin/activate
-    [pc]$ cd donkeycar
-    [pc]$ pip3 install -e .[tf,dev,pc]
+    [pc]$ pip3 install -e .[tf,dev,pc,ci]
 ```
 
 ### RPi install
