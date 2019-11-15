@@ -297,6 +297,7 @@ class Adafruit_DCMotor_Hat:
         
 
     def shutdown(self):
+        from Adafruit_MotorHAT import Adafruit_MotorHAT
         self.mh.getMotor(self.motor_num).run(Adafruit_MotorHAT.RELEASE)
 
 
