@@ -39,7 +39,7 @@ wm.led = 1
 #servos.setSpeeds(0,0)
 #print state every second
 
-def setSeeds(s1, s2):
+def setSpeeds(s1, s2):
     print("s %d %d" % (s1, s2))
     #pwm.set_pulse(h
 
