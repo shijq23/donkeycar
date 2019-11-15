@@ -14,6 +14,8 @@ import donkeycar as dk
 from donkeycar.parts.cv import CvImageView, ImgBGR2RGB, ImageScale
 from donkeycar.parts.network import TCPClientValue
 from donkeycar.parts.image import JpgToImgArr
+import os
+import cv2
 
 args = docopt(__doc__)
 print(args)

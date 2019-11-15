@@ -1,7 +1,7 @@
 {
     "python.pythonPath": "env/bin/python",
     "files.exclude": {
-        "**/env/*/**": true,
+        "**/env/*/**": false,
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
         "**/node_modules/*/**": true

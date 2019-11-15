@@ -123,7 +123,7 @@ def rgb2gray(rgb):
 
 def img_crop(img_arr, top, bottom):
     
-    if bottom is 0:
+    if bottom == 0:
         end = img_arr.shape[0]
     else:
         end = -bottom
