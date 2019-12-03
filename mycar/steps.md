@@ -54,7 +54,7 @@
 
 ```bash
     #sudo apt-get install python-opencv
-    pip3 install opencv-python
+    pip3 install opencv-python opencv-contrib-python
 ```
 
 ### install project
