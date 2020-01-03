@@ -173,7 +173,7 @@ class VideoAPI(RequestHandler):
     async def get(self):
 
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
-        self.set_header( 'Pragma', 'no-cache')
+        self.set_header('Pragma', 'no-cache')
         self.set_header("Content-Type", "multipart/x-mixed-replace;boundary=--boundarydonotcross")
 
         self.served_image_timestamp = time.time()
@@ -181,7 +181,7 @@ class VideoAPI(RequestHandler):
         while True:
 
             interval = .01
-            if served_image_timestamp + interval < time.time() and \
+            if self.served_image_timestamp + interval < time.time() and \
                     hasattr(self.application, 'img_arr'):
 
                 img = utils.arr_to_binary(self.application.img_arr)
@@ -189,7 +189,7 @@ class VideoAPI(RequestHandler):
                 self.write("Content-Type: image/jpeg\r\n")
                 self.write("Content-Length: %s\r\n\r\n" % len(img))
                 self.write(img)
-                served_image_timestamp = time.time()
+                self.served_image_timestamp = time.time()
                 try:
                     await self.flush()
                 except tornado.iostream.StreamClosedError:

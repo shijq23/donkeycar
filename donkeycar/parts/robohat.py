@@ -8,6 +8,8 @@ contrib: @peterpanstechland 2019
 
 import time
 
+import donkeycar as dk
+
 try:
     import serial
 except ImportError:
