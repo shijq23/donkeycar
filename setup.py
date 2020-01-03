@@ -54,10 +54,13 @@ setup(name='donkeycar',
                     'pi': [
                         'picamera',
                         'Adafruit_PCA9685',
-                        'RPi.GPIO'
+                        'Adafruit_SSD1306',
+                        'RPi.GPIO',
+                        'pyserial',
                         ],
                     'nano': [
-                        'Adafruit_PCA9685',                        
+                        'Adafruit_PCA9685',
+                        'Adafruit_SSD1306',
                         ],
                     'pc': [
                         'matplotlib',
@@ -96,6 +99,7 @@ setup(name='donkeycar',
 
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
       ],
       keywords='selfdriving cars donkeycar diyrobocars',
 
