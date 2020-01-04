@@ -202,7 +202,10 @@ class BaseHandler(RequestHandler):
     """ Serves the FPV web page"""
     async def get(self):
         data = {}
-        await self.render("templates/base_fpv.html", **data)
+        try:
+            await self.render("templates/base_fpv.html", **data)
+        except asyncio.CancelledError:
+            pass
 
 
 class WebFpv(Application):

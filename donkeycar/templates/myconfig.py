@@ -27,6 +27,7 @@ THROTTLE_MIN_PWM = 500          #pwm value for min movement (throttle -> 0)
 
 #JOYSTICK
 CONTROLLER_TYPE='ps4'
+USE_FPV = False                     # send camera data to FPV webserver
 
 #REMOTE_PILOT
 REMOTE_PILOT_HOST = "192.168.2.35" # remote pilot server hostname or ip
