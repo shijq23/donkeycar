@@ -313,7 +313,7 @@ class USBCamera(BaseCamera):
     '''
     Use opencv camera
     '''
-    def __init__(self, resolution=(120, 160), image_w=160, image_h=120, image_d=3, framerate=7):
+    def __init__(self, image_w=160, image_h=120, image_d=3, framerate=7):
         import cv2
         self.video = cv2.VideoCapture(0)
         self.video.set(cv2.CAP_PROP_FRAME_WIDTH, image_w)  # SCREEN_WIDTH
