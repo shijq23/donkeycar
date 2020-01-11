@@ -736,7 +736,7 @@ def go_train(kl, cfg, train_gen, val_gen, gen_records, model_name, steps_per_epo
         print('pruning stopped at {} with a target of {}'.format(cnn_channels, target_channels))
 
 
-class SequencePredictionGenerator(keras.utils.Sequence):
+class SequencePredictionGenerator(keras.utils.data_utils.Sequence):
     """
     Provides a thread safe data generator for the Keras predict_generator for use with kerasergeon. 
     """
