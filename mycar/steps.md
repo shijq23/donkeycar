@@ -94,7 +94,7 @@ If see error: moviepy 1.0.0 has requirement imageio<2.5,>=2.0, but you'll have i
 ### drive and collect data
 
 ```bash
-    [pi]$ python3 manager.py drive --model ~/mycar/models/linear.h5
+    [pi]$ python3 manage.py drive --model ~/mycar/models/linear.h5
 ```
 
 collect 10-20 laps of good data
@@ -102,7 +102,7 @@ collect 10-20 laps of good data
 ### drive with joystick
 
 ```bash
-    [pi]$ python3 manager.py drive --js --model ~/mycar/models/linear.h5
+    [pi]$ python3 manage.py drive --js --model ~/mycar/models/linear.h5
 ```
 
 ### transfer data to PC
@@ -158,6 +158,7 @@ collect 10-20 laps of good data
 ```bash
     [pc]$ pip install keras-vis
     [pc]$ donkey makemovie --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear --out=<name>.mp4
+    [pc]$ donkey makemovie --config=config.py  --tub=data/tub_3_19-09-15 --model=models/ps4.h5 --type=linear --out=<name>.mp4 --salient
     [pc]$ vlc tub_movie.mp4 or totem tub_movie.mp4
     #if cannot import name 'imresize' or 'cv2', then do the following
     [pc]$ pip install -I scipy==1.2.*
