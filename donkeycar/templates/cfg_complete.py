@@ -25,7 +25,7 @@ DRIVE_LOOP_HZ = 20      # the vehicle loop will pause if faster than this speed.
 MAX_LOOPS = None        # the vehicle loop can abort after this many iterations, when given a positive integer.
 
 #CAMERA
-CAMERA_TYPE = "PICAM"   # (PICAM|WEBCAM|CVCAM|CSIC|V4L|MOCK)
+CAMERA_TYPE = "PICAM"   # (PICAM|WEBCAM|CVCAM|CSIC|V4L|D435|MOCK)
 IMAGE_W = 160
 IMAGE_H = 120
 IMAGE_DEPTH = 3         # default RGB=3, make 1 for mono
@@ -123,6 +123,9 @@ ROI_CROP_BOTTOM = 0                 #the number of rows of pixels to ignore on t
 FREEZE_LAYERS = False               #default False will allow all layers to be modified by training
 NUM_LAST_LAYERS_TO_TRAIN = 7        #when freezing layers, how many layers from the last should be allowed to train?
 
+#WEB CONTROL
+WEB_CONTROL_PORT = 8887             # which port to listen on when making a web controller
+WEB_INIT_MODE = "user"              # which control mode to start in. one of user|local_angle|local. Setting local will start in ai mode.
 
 #JOYSTICK
 USE_JOYSTICK_AS_DEFAULT = False     #when starting the manage.py, when True, will not require a --js option to use the joystick
@@ -146,6 +149,8 @@ SEQUENCE_LENGTH = 3             #some models use a number of images over time. T
 
 #IMU
 HAVE_IMU = False                #when true, this add a Mpu6050 part and records the data. Can be used with a 
+IMU_SENSOR = 'mpu6050'          # (mpu6050|mpu9250)
+IMU_DLP_CONFIG = 0              # Digital Lowpass Filter setting (0:250Hz, 1:184Hz, 2:92Hz, 3:41Hz, 4:20Hz, 5:10Hz, 6:5Hz)
 
 #SOMBRERO
 HAVE_SOMBRERO = False           #set to true when using the sombrero hat from the Donkeycar store. This will enable pwm on the hat.
@@ -214,8 +219,11 @@ BUTTON_PRESS_NEW_TUB = False #when enabled, makes it easier to divide our data i
 #You will want to download the simulator binary from: https://github.com/tawnkramer/donkey_gym/releases/download/v18.9/DonkeySimLinux.zip
 #then extract that and modify DONKEY_SIM_PATH.
 DONKEY_GYM = False
-DONKEY_SIM_PATH = "path to sim" #"/home/tkramer/projects/sdsandbox/sdsim/build/DonkeySimLinux/donkey_sim.x86_64"
+DONKEY_SIM_PATH = "path to sim" #"/home/tkramer/projects/sdsandbox/sdsim/build/DonkeySimLinux/donkey_sim.x86_64" when racing on virtual-race-league use "remote", or user "remote" when you want to start the sim manually first.
 DONKEY_GYM_ENV_NAME = "donkey-generated-track-v0" # ("donkey-generated-track-v0"|"donkey-generated-roads-v0"|"donkey-warehouse-v0"|"donkey-avc-sparkfun-v0")
+GYM_CONF = { "body_style" : "donkey", "body_rgb" : (128, 128, 128), "car_name" : "me", "font_size" : 100} # body style(donkey|bare|car01) body rgb 0-255
+SIM_HOST = "127.0.0.1"              # when racing on virtual-race-league use host "trainmydonkey.com"
+SIM_ARTIFICIAL_LATENCY = 0          # this is the millisecond latency in controls. Can use useful in emulating the delay when useing a remote server. values of 100 to 400 probably reasonable.
 
 #publish camera over network
 #This is used to create a tcp service to pushlish the camera feed
@@ -231,7 +239,7 @@ AI_LAUNCH_KEEP_ENABLED = False      # when False ( default) you will need to hit
 AI_THROTTLE_MULT = 1.0              # this multiplier will scale every throttle value for all output from NN models
 
 #Path following
-PATH_FILENAME = "donkey_path.pkl"   #the path will be saved to this filename
+PATH_FILENAME = "donkey_path.pkl"   # the path will be saved to this filename
 PATH_SCALE = 5.0                    # the path display will be scaled by this factor in the web page
 PATH_OFFSET = (0, 0)                # 255, 255 is the center of the map. This offset controls where the origin is displayed.
 PATH_MIN_DIST = 0.3                 # after travelling this distance (m), save a path point
@@ -241,4 +249,11 @@ PID_D = -0.2                        # differential mult for PID path follower
 PID_THROTTLE = 0.2                  # constant throttle value during path following
 SAVE_PATH_BTN = "cross"             # joystick button to save path
 RESET_ORIGIN_BTN = "triangle"       # joystick button to press to move car back to origin
+
+# Intel Realsense D435 and D435i depth sensing camera
+REALSENSE_D435_RGB = True       # True to capture RGB image
+REALSENSE_D435_DEPTH = True     # True to capture depth as image array
+REALSENSE_D435_IMU = False      # True to capture IMU data (D435i only)
+REALSENSE_D435_ID = None        # serial number of camera or None if you only have one camera (it will autodetect)
+
 
